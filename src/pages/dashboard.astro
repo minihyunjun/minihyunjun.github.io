@@ -93,22 +93,21 @@
     .header-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
 
     .icon-btn {
-      background: var(--toggle-bg);
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      font-size: 18px;
+      background: none;
+      border: none;
+      padding: 4px;
+      font-size: 24px;
       font-family: Tossface;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background 0.2s, border-color 0.2s;
       flex-shrink: 0;
+      opacity: 0.7;
+      transition: opacity 0.15s;
+      line-height: 1;
     }
-    .icon-btn:hover { background: var(--toggle-hover); border-color: var(--border-hover); }
+    .icon-btn:hover { opacity: 1; }
     .icon-btn.spinning { animation: spin 1s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
@@ -280,7 +279,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 12px;
+      gap: 16px;
       margin-top: 48px;
     }
 
@@ -318,7 +317,7 @@
         <h1>OpenClaw Dashboard</h1>
       </div>
       <div class="header-actions">
-        <button class="icon-btn" id="refresh-btn" title="새로고침">↻</button>
+        <button class="icon-btn" id="refresh-btn" title="새로고침">🔄</button>
       </div>
     </header>
 
