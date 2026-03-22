@@ -1,0 +1,343 @@
+---
+const agents = [
+  {
+    id: 'gary',
+    name: '개리',
+    englishName: 'Gary',
+    emoji: '🐍',
+    role: '기술 검토 · 설계 결정',
+    tokens: 231426,
+    color: '#6ee7b7',
+  },
+  {
+    id: 'judy',
+    name: '주디',
+    englishName: 'Judy',
+    emoji: '🐰',
+    role: '기능 구현 · 코드 작성',
+    tokens: 364044,
+    color: '#a78bfa',
+  },
+  {
+    id: 'nick',
+    name: '닉',
+    englishName: 'Nick',
+    emoji: '🦊',
+    role: '일정 관리 · 진행 추적',
+    tokens: 493374,
+    color: '#fbbf24',
+  },
+];
+
+const total = agents.reduce((sum, a) => sum + a.tokens, 0);
+
+function fmt(n: number) {
+  return n.toLocaleString('ko-KR');
+}
+---
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenClaw Dashboard</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background: #0d0d0d;
+      color: #e8e8e8;
+      font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      padding: 40px 24px;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 48px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo span { font-size: 26px; }
+    .logo h1 {
+      font-size: 20px;
+      font-weight: 600;
+      color: #e8e8e8;
+      letter-spacing: -0.3px;
+    }
+
+    .logout-btn {
+      background: none;
+      border: 1px solid #2e2e2e;
+      color: #6b6b6b;
+      padding: 7px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .logout-btn:hover { color: #e8e8e8; border-color: #555; }
+
+    .section-title {
+      font-size: 12px;
+      font-weight: 500;
+      color: #6b6b6b;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+    }
+
+    /* Summary card */
+    .summary {
+      background: #161616;
+      border: 1px solid #2a2a2a;
+      border-radius: 16px;
+      padding: 28px 32px;
+      margin-bottom: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .summary-label {
+      font-size: 13px;
+      color: #6b6b6b;
+      margin-bottom: 6px;
+    }
+
+    .summary-value {
+      font-size: 36px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -1px;
+    }
+
+    .summary-sub {
+      font-size: 13px;
+      color: #4a4a4a;
+      margin-top: 4px;
+    }
+
+    /* Bar chart */
+    .bar-section {
+      background: #161616;
+      border: 1px solid #2a2a2a;
+      border-radius: 16px;
+      padding: 28px 32px;
+      margin-bottom: 32px;
+    }
+
+    .bar-row {
+      display: grid;
+      grid-template-columns: 90px 1fr 90px;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .bar-row:last-child { margin-bottom: 0; }
+
+    .bar-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #c8c8c8;
+    }
+
+    .bar-track {
+      height: 10px;
+      background: #222;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 99px;
+      transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    .bar-count {
+      font-size: 13px;
+      color: #8a8a8a;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Agent cards */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    .agent-card {
+      background: #161616;
+      border: 1px solid #2a2a2a;
+      border-radius: 14px;
+      padding: 24px;
+      transition: border-color 0.2s;
+    }
+
+    .agent-card:hover { border-color: #3a3a3a; }
+
+    .agent-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .agent-emoji { font-size: 24px; }
+
+    .agent-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: #e8e8e8;
+    }
+
+    .agent-role {
+      font-size: 11px;
+      color: #5a5a5a;
+      margin-top: 2px;
+    }
+
+    .agent-tokens {
+      font-size: 28px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.8px;
+      margin-bottom: 4px;
+    }
+
+    .agent-tokens-label {
+      font-size: 12px;
+      color: #5a5a5a;
+      margin-bottom: 16px;
+    }
+
+    .agent-pct-bar {
+      height: 3px;
+      background: #222;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .agent-pct-fill {
+      height: 100%;
+      border-radius: 99px;
+    }
+
+    .agent-pct-text {
+      font-size: 11px;
+      color: #5a5a5a;
+      margin-top: 6px;
+    }
+
+    footer {
+      margin-top: 48px;
+      text-align: center;
+      font-size: 12px;
+      color: #3a3a3a;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <span>🐾</span>
+        <h1>OpenClaw Dashboard</h1>
+      </div>
+      <button class="logout-btn" id="logout-btn">로그아웃</button>
+    </header>
+
+    <!-- Summary -->
+    <p class="section-title">전체 요약</p>
+    <div class="summary">
+      <div>
+        <p class="summary-label">총 토큰 사용량</p>
+        <p class="summary-value">{fmt(total)}</p>
+        <p class="summary-sub">에이전트 3명 합산</p>
+      </div>
+    </div>
+
+    <!-- Bar chart -->
+    <p class="section-title">에이전트별 비교</p>
+    <div class="bar-section">
+      {agents.map(a => (
+        <div class="bar-row">
+          <span class="bar-label">
+            <span>{a.emoji}</span>
+            <span>{a.name}</span>
+          </span>
+          <div class="bar-track">
+            <div
+              class="bar-fill"
+              style={`width: ${((a.tokens / total) * 100).toFixed(1)}%; background: ${a.color};`}
+            ></div>
+          </div>
+          <span class="bar-count">{fmt(a.tokens)}</span>
+        </div>
+      ))}
+    </div>
+
+    <!-- Agent cards -->
+    <p class="section-title">에이전트 상세</p>
+    <div class="cards">
+      {agents.map(a => {
+        const pct = ((a.tokens / total) * 100).toFixed(1);
+        return (
+          <div class="agent-card">
+            <div class="agent-header">
+              <span class="agent-emoji">{a.emoji}</span>
+              <div>
+                <p class="agent-name">{a.name} ({a.englishName})</p>
+                <p class="agent-role">{a.role}</p>
+              </div>
+            </div>
+            <p class="agent-tokens">{fmt(a.tokens)}</p>
+            <p class="agent-tokens-label">tokens used</p>
+            <div class="agent-pct-bar">
+              <div
+                class="agent-pct-fill"
+                style={`width: ${pct}%; background: ${a.color};`}
+              ></div>
+            </div>
+            <p class="agent-pct-text">{pct}% of total</p>
+          </div>
+        );
+      })}
+    </div>
+
+    <footer>OpenClaw · 데이터 소스: ~/.openclaw/agents/*/sessions/*.jsonl</footer>
+  </div>
+
+  <script>
+    // Auth guard
+    if (sessionStorage.getItem('oc_auth') !== '1') {
+      window.location.replace('/');
+    }
+
+    document.getElementById('logout-btn').addEventListener('click', () => {
+      sessionStorage.removeItem('oc_auth');
+      window.location.replace('/');
+    });
+  </script>
+</body>
+</html>
