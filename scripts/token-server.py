@@ -14,6 +14,11 @@ from pathlib import Path
 
 PORT = 8789
 
+# 대시보드 서버 URL 입력창에 ?token=값 으로 함께 전달
+# 예: http://192.168.x.x:8789  →  토큰은 아래 값과 일치해야 함
+# 변경하려면 이 값과 대시보드 저장 URL을 함께 바꿀 것
+SECRET_TOKEN = "openclaw-dashboard"
+
 AGENTS = [
     {"id": "gary",  "agentId": "main",    "emoji": "🐍", "name": "개리", "englishName": "Gary",  "role": "기술 검토 · 설계 결정", "model": "github-copilot/gpt-4o",        "color": "#6ee7b7", "contextTokens": 64000},
     {"id": "judy",  "agentId": "develop", "emoji": "🐰", "name": "주디", "englishName": "Judy",  "role": "기능 구현 · 코드 작성", "model": "ollama/qwen2.5-coder:14b",     "color": "#a78bfa", "contextTokens": 65536},
@@ -61,6 +66,16 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         if self.path.startswith("/tokens"):
+            # 토큰 인증
+            from urllib.parse import urlparse, parse_qs
+            query = parse_qs(urlparse(self.path).query)
+            provided = query.get("token", [None])[0]
+            if provided != SECRET_TOKEN:
+                self.send_response(401)
+                self._cors()
+                self.end_headers()
+                return
+
             body = json.dumps(get_token_data(), ensure_ascii=False).encode()
             self.send_response(200)
             self.send_header("Content-Type", "application/json; charset=utf-8")

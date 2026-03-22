@@ -563,7 +563,8 @@
       const serverUrl = localStorage.getItem('oc_server');
       if (serverUrl) {
         try {
-          const res = await fetch(`${serverUrl}/tokens?t=` + Date.now());
+          const token = localStorage.getItem('oc_server_token') || 'openclaw-dashboard';
+          const res = await fetch(`${serverUrl}/tokens?token=${token}&t=` + Date.now());
           if (!res.ok) throw new Error(res.status);
           const data = await res.json();
           render(data);
