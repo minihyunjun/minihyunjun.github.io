@@ -92,24 +92,22 @@
 
     .header-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
 
-    .icon-btn {
+    #refresh-btn {
+      position: fixed;
+      top: 16px;
+      right: 20px;
       background: none;
       border: none;
       padding: 4px;
       font-size: 24px;
       font-family: Tossface;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      opacity: 0.7;
+      opacity: 0.6;
       transition: opacity 0.15s;
       line-height: 1;
+      z-index: 100;
     }
-    .icon-btn:hover { opacity: 1; }
-    .icon-btn.spinning { animation: spin 1s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    #refresh-btn:hover { opacity: 1; }
 
     .logout-btn {
       background: none;
@@ -292,13 +290,7 @@
 
     @media (max-width: 600px) {
       body { padding: 24px 20px; }
-      header {
-        flex-wrap: wrap;
-        margin-bottom: 28px;
-        gap: 10px;
-      }
-      .logo { flex: 1 1 100%; }
-      .header-actions { flex: 1 1 100%; justify-content: flex-end; }
+      header { margin-bottom: 28px; }
       .logo h1 { font-size: 18px; }
       .summary { flex-direction: column; gap: 20px; }
       .summary-stats { gap: 20px; }
@@ -316,9 +308,7 @@
         <span class="logo-emoji tossface">🐾</span>
         <h1>OpenClaw Dashboard</h1>
       </div>
-      <div class="header-actions">
-        <button class="icon-btn" id="refresh-btn" title="새로고침">🔄</button>
-      </div>
+      <button id="refresh-btn" title="새로고침">🔄</button>
     </header>
 
     <p class="section-title">전체 요약</p>
@@ -485,7 +475,6 @@
     // Fetch data
     const refreshBtn = document.getElementById('refresh-btn');
     async function loadData() {
-      refreshBtn.classList.add('spinning');
       try {
         const res = await fetch('/data/tokens.json?t=' + Date.now());
         if (!res.ok) throw new Error(res.status);
@@ -493,8 +482,6 @@
         render(data);
       } catch (e) {
         console.error('Failed to load tokens:', e);
-      } finally {
-        refreshBtn.classList.remove('spinning');
       }
     }
 
