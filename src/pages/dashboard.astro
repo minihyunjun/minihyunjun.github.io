@@ -92,22 +92,6 @@
 
     .header-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
 
-    #refresh-btn {
-      position: fixed;
-      top: 16px;
-      right: 20px;
-      background: none;
-      border: none;
-      padding: 4px;
-      font-size: 24px;
-      font-family: Tossface;
-      cursor: pointer;
-      opacity: 0.6;
-      transition: opacity 0.15s;
-      line-height: 1;
-      z-index: 100;
-    }
-    #refresh-btn:hover { opacity: 1; }
 
     .logout-btn {
       background: none;
@@ -301,13 +285,6 @@
       color: var(--text-faint);
     }
 
-    .refresh-hint {
-      font-size: 11px;
-      margin-left: 6px;
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-    .refresh-hint.show { opacity: 1; }
 
 
     @media (max-width: 600px) {
@@ -329,10 +306,6 @@
       <div class="logo">
         <span class="logo-emoji tossface">🐾</span>
         <h1>OpenClaw Dashboard</h1>
-      </div>
-      <div style="display:flex;align-items:center;">
-        <button id="refresh-btn" title="새로고침">🔄</button>
-        <span class="refresh-hint" id="refresh-hint"></span>
       </div>
     </header>
 
@@ -498,40 +471,17 @@
     }
 
     // Fetch data
-    const refreshBtn = document.getElementById('refresh-btn');
-    const refreshHint = document.getElementById('refresh-hint');
-    let lastUpdatedAt = null;
-    let hintTimer = null;
-
-    function showHint(text, color) {
-      refreshHint.textContent = text;
-      refreshHint.style.color = color;
-      refreshHint.classList.add('show');
-      clearTimeout(hintTimer);
-      hintTimer = setTimeout(() => refreshHint.classList.remove('show'), 3000);
-    }
-
-    async function loadData(isManual = false) {
+    async function loadData() {
       try {
         const res = await fetch('/data/tokens.json?t=' + Date.now());
         if (!res.ok) throw new Error(res.status);
         const data = await res.json();
         render(data);
-        if (isManual) {
-          if (lastUpdatedAt && data.updatedAt === lastUpdatedAt) {
-            showHint('변경 없음', 'var(--text-dim)');
-          } else if (lastUpdatedAt) {
-            showHint('업데이트됨 ✓', '#4ade80');
-          }
-        }
-        lastUpdatedAt = data.updatedAt;
       } catch (e) {
         console.error('Failed to load tokens:', e);
-        if (isManual) showHint('실패', '#f87171');
       }
     }
 
-    refreshBtn.addEventListener('click', () => loadData(true));
     setInterval(loadData, 5 * 60 * 1000);
     loadData();
   </script>
