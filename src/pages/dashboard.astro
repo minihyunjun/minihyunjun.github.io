@@ -1,35 +1,12 @@
 ---
-const agents = [
-  {
-    id: 'gary',
-    name: '개리',
-    englishName: 'Gary',
-    emoji: '🐍',
-    role: '기술 검토 · 설계 결정',
-    tokens: 231426,
-    color: '#6ee7b7',
-  },
-  {
-    id: 'judy',
-    name: '주디',
-    englishName: 'Judy',
-    emoji: '🐰',
-    role: '기능 구현 · 코드 작성',
-    tokens: 364044,
-    color: '#a78bfa',
-  },
-  {
-    id: 'nick',
-    name: '닉',
-    englishName: 'Nick',
-    emoji: '🦊',
-    role: '일정 관리 · 진행 추적',
-    tokens: 493374,
-    color: '#fbbf24',
-  },
-];
+import tokensData from '../data/tokens.json';
 
-const total = agents.reduce((sum, a) => sum + a.tokens, 0);
+const agents = tokensData.agents;
+const dataUpdatedAt = tokensData.updatedAt;
+
+const totalInput = agents.reduce((s, a) => s + a.inputTokens, 0);
+const totalOutput = agents.reduce((s, a) => s + a.outputTokens, 0);
+const totalUsed = totalInput + totalOutput;
 
 function fmt(n: number) {
   return n.toLocaleString('ko-KR');
@@ -41,219 +18,265 @@ function fmt(n: number) {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>OpenClaw Dashboard</title>
+  <script is:inline>
+    (function () {
+      const saved = localStorage.getItem('oc_theme');
+      const sys = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', saved || sys);
+    })();
+  </script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
+    [data-theme="dark"] {
+      --bg: #0d0d0d;
+      --surface: #161616;
+      --surface2: #1e1e1e;
+      --border: #2a2a2a;
+      --border-hover: #3a3a3a;
+      --text: #e8e8e8;
+      --text-sub: #c8c8c8;
+      --text-muted: #8a8a8a;
+      --text-dim: #5a5a5a;
+      --text-faint: #3a3a3a;
+      --bar-track: #222;
+      --btn-border: #2e2e2e;
+      --btn-color: #6b6b6b;
+      --btn-hover-color: #e8e8e8;
+      --btn-hover-border: #555;
+      --badge-bg: #242424;
+      --badge-text: #888;
+      --toggle-bg: #2a2a2a;
+      --toggle-hover: #333;
+    }
+
+    [data-theme="light"] {
+      --bg: #f5f5f5;
+      --surface: #ffffff;
+      --surface2: #f8f8f8;
+      --border: #e0e0e0;
+      --border-hover: #c0c0c0;
+      --text: #1a1a1a;
+      --text-sub: #333;
+      --text-muted: #6b6b6b;
+      --text-dim: #999;
+      --text-faint: #ccc;
+      --bar-track: #ebebeb;
+      --btn-border: #ddd;
+      --btn-color: #888;
+      --btn-hover-color: #1a1a1a;
+      --btn-hover-border: #999;
+      --badge-bg: #f0f0f0;
+      --badge-text: #666;
+      --toggle-bg: #efefef;
+      --toggle-hover: #e0e0e0;
+    }
+
     body {
       min-height: 100vh;
-      background: #0d0d0d;
-      color: #e8e8e8;
+      background: var(--bg);
+      color: var(--text);
       font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       padding: 40px 24px;
+      transition: background 0.2s, color 0.2s;
     }
 
-    .container {
-      max-width: 860px;
-      margin: 0 auto;
-    }
+    .container { max-width: 900px; margin: 0 auto; }
 
+    /* Header */
     header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       margin-bottom: 48px;
+      gap: 12px;
     }
 
-    .logo {
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo span { font-size: 26px; }
+    .logo h1 { font-size: 20px; font-weight: 600; color: var(--text); letter-spacing: -0.3px; }
+
+    .header-actions { display: flex; align-items: center; gap: 10px; }
+
+    .theme-toggle {
+      background: var(--toggle-bg);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 10px;
+      justify-content: center;
+      transition: background 0.2s, border-color 0.2s;
     }
-
-    .logo span { font-size: 26px; }
-    .logo h1 {
-      font-size: 20px;
-      font-weight: 600;
-      color: #e8e8e8;
-      letter-spacing: -0.3px;
-    }
+    .theme-toggle:hover { background: var(--toggle-hover); border-color: var(--border-hover); }
 
     .logout-btn {
       background: none;
-      border: 1px solid #2e2e2e;
-      color: #6b6b6b;
+      border: 1px solid var(--btn-border);
+      color: var(--btn-color);
       padding: 7px 16px;
       border-radius: 8px;
       font-size: 13px;
       cursor: pointer;
       transition: color 0.2s, border-color 0.2s;
+      white-space: nowrap;
     }
-    .logout-btn:hover { color: #e8e8e8; border-color: #555; }
+    .logout-btn:hover { color: var(--btn-hover-color); border-color: var(--btn-hover-border); }
 
     .section-title {
       font-size: 12px;
       font-weight: 500;
-      color: #6b6b6b;
+      color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 1px;
       margin-bottom: 16px;
     }
 
-    /* Summary card */
+    /* Summary */
     .summary {
-      background: #161616;
-      border: 1px solid #2a2a2a;
+      background: var(--surface);
+      border: 1px solid var(--border);
       border-radius: 16px;
-      padding: 28px 32px;
+      padding: 24px 28px;
       margin-bottom: 32px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 24px;
+      gap: 16px;
+      flex-wrap: wrap;
     }
 
-    .summary-label {
-      font-size: 13px;
-      color: #6b6b6b;
-      margin-bottom: 6px;
+    .summary-main { flex: 1; min-width: 160px; }
+    .summary-label { font-size: 13px; color: var(--text-muted); margin-bottom: 6px; }
+    .summary-value { font-size: 36px; font-weight: 700; color: var(--text); letter-spacing: -1px; }
+    .summary-sub { font-size: 13px; color: var(--text-dim); margin-top: 4px; }
+
+    .summary-stats {
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
     }
 
-    .summary-value {
-      font-size: 36px;
-      font-weight: 700;
-      color: #ffffff;
-      letter-spacing: -1px;
-    }
-
-    .summary-sub {
-      font-size: 13px;
-      color: #4a4a4a;
-      margin-top: 4px;
-    }
+    .stat-item { text-align: right; }
+    .stat-label { font-size: 11px; color: var(--text-dim); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .stat-value { font-size: 18px; font-weight: 600; color: var(--text-sub); }
 
     /* Bar chart */
     .bar-section {
-      background: #161616;
-      border: 1px solid #2a2a2a;
+      background: var(--surface);
+      border: 1px solid var(--border);
       border-radius: 16px;
-      padding: 28px 32px;
+      padding: 24px 28px;
       margin-bottom: 32px;
     }
 
     .bar-row {
       display: grid;
-      grid-template-columns: 90px 1fr 90px;
+      grid-template-columns: 90px 1fr 100px;
       align-items: center;
       gap: 16px;
       margin-bottom: 18px;
     }
-
     .bar-row:last-child { margin-bottom: 0; }
 
-    .bar-label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 14px;
-      font-weight: 500;
-      color: #c8c8c8;
-    }
+    .bar-label { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: var(--text-sub); }
 
-    .bar-track {
-      height: 10px;
-      background: #222;
-      border-radius: 99px;
-      overflow: hidden;
-    }
+    .bar-track { height: 10px; background: var(--bar-track); border-radius: 99px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 99px; transition: width 0.8s cubic-bezier(0.4,0,0.2,1); }
 
-    .bar-fill {
-      height: 100%;
-      border-radius: 99px;
-      transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
-    }
-
-    .bar-count {
-      font-size: 13px;
-      color: #8a8a8a;
-      text-align: right;
-      font-variant-numeric: tabular-nums;
-    }
+    .bar-count { font-size: 13px; color: var(--text-muted); text-align: right; font-variant-numeric: tabular-nums; }
 
     /* Agent cards */
     .cards {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 16px;
     }
 
     .agent-card {
-      background: #161616;
-      border: 1px solid #2a2a2a;
+      background: var(--surface);
+      border: 1px solid var(--border);
       border-radius: 14px;
-      padding: 24px;
+      padding: 22px;
       transition: border-color 0.2s;
     }
-
-    .agent-card:hover { border-color: #3a3a3a; }
+    .agent-card:hover { border-color: var(--border-hover); }
 
     .agent-header {
       display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 20px;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      gap: 8px;
     }
 
-    .agent-emoji { font-size: 24px; }
+    .agent-identity { display: flex; align-items: center; gap: 10px; }
+    .agent-emoji { font-size: 22px; flex-shrink: 0; }
+    .agent-name { font-size: 15px; font-weight: 600; color: var(--text); }
+    .agent-role { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
 
-    .agent-name {
-      font-size: 16px;
-      font-weight: 600;
-      color: #e8e8e8;
-    }
-
-    .agent-role {
-      font-size: 11px;
-      color: #5a5a5a;
+    .model-badge {
+      background: var(--badge-bg);
+      color: var(--badge-text);
+      font-size: 10px;
+      font-weight: 500;
+      padding: 3px 8px;
+      border-radius: 99px;
+      white-space: nowrap;
+      flex-shrink: 0;
       margin-top: 2px;
     }
 
-    .agent-tokens {
-      font-size: 28px;
-      font-weight: 700;
-      color: #ffffff;
-      letter-spacing: -0.8px;
-      margin-bottom: 4px;
+    /* Token row */
+    .token-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 18px;
     }
 
-    .agent-tokens-label {
-      font-size: 12px;
-      color: #5a5a5a;
-      margin-bottom: 16px;
-    }
+    .token-block {}
+    .token-block-label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+    .token-block-value { font-size: 20px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
 
-    .agent-pct-bar {
-      height: 3px;
-      background: #222;
-      border-radius: 99px;
-      overflow: hidden;
-    }
-
-    .agent-pct-fill {
-      height: 100%;
-      border-radius: 99px;
-    }
-
-    .agent-pct-text {
+    /* Context bar */
+    .ctx-label {
+      display: flex;
+      justify-content: space-between;
       font-size: 11px;
-      color: #5a5a5a;
-      margin-top: 6px;
+      color: var(--text-dim);
+      margin-bottom: 6px;
     }
+    .ctx-pct { font-weight: 600; }
+
+    .ctx-track { height: 4px; background: var(--bar-track); border-radius: 99px; overflow: hidden; margin-bottom: 14px; }
+    .ctx-fill { height: 100%; border-radius: 99px; max-width: 100%; }
+
+    /* Last activity */
+    .last-activity { font-size: 11px; color: var(--text-dim); }
+    .last-activity-time { color: var(--text-muted); }
 
     footer {
       margin-top: 48px;
       text-align: center;
       font-size: 12px;
-      color: #3a3a3a;
+      color: var(--text-faint);
+    }
+
+    @media (max-width: 600px) {
+      body { padding: 24px 16px; }
+      header { margin-bottom: 32px; }
+      .logo h1 { font-size: 17px; }
+      .summary { flex-direction: column; gap: 20px; }
+      .summary-stats { gap: 20px; }
+      .stat-item { text-align: left; }
+      .bar-row { grid-template-columns: 70px 1fr 80px; gap: 10px; }
+      .cards { grid-template-columns: 1fr; }
+      .summary-value { font-size: 28px; }
     }
   </style>
 </head>
@@ -264,80 +287,159 @@ function fmt(n: number) {
         <span>🐾</span>
         <h1>OpenClaw Dashboard</h1>
       </div>
-      <button class="logout-btn" id="logout-btn">로그아웃</button>
+      <div class="header-actions">
+        <button class="theme-toggle" id="theme-toggle" title="테마 전환">🌙</button>
+        <button class="logout-btn" id="logout-btn">로그아웃</button>
+      </div>
     </header>
 
     <!-- Summary -->
     <p class="section-title">전체 요약</p>
     <div class="summary">
-      <div>
+      <div class="summary-main">
         <p class="summary-label">총 토큰 사용량</p>
-        <p class="summary-value">{fmt(total)}</p>
+        <p class="summary-value">{fmt(totalUsed)}</p>
         <p class="summary-sub">에이전트 3명 합산</p>
+      </div>
+      <div class="summary-stats">
+        <div class="stat-item">
+          <p class="stat-label">Input</p>
+          <p class="stat-value">{fmt(totalInput)}</p>
+        </div>
+        <div class="stat-item">
+          <p class="stat-label">Output</p>
+          <p class="stat-value">{fmt(totalOutput)}</p>
+        </div>
       </div>
     </div>
 
     <!-- Bar chart -->
     <p class="section-title">에이전트별 비교</p>
     <div class="bar-section">
-      {agents.map(a => (
-        <div class="bar-row">
-          <span class="bar-label">
-            <span>{a.emoji}</span>
-            <span>{a.name}</span>
-          </span>
-          <div class="bar-track">
-            <div
-              class="bar-fill"
-              style={`width: ${((a.tokens / total) * 100).toFixed(1)}%; background: ${a.color};`}
-            ></div>
+      {agents.map(a => {
+        const used = a.inputTokens + a.outputTokens;
+        const pct = totalUsed > 0 ? ((used / totalUsed) * 100).toFixed(1) : '0';
+        return (
+          <div class="bar-row">
+            <span class="bar-label">
+              <span>{a.emoji}</span>
+              <span>{a.name}</span>
+            </span>
+            <div class="bar-track">
+              <div class="bar-fill" style={`width: ${pct}%; background: ${a.color};`}></div>
+            </div>
+            <span class="bar-count">{fmt(used)}</span>
           </div>
-          <span class="bar-count">{fmt(a.tokens)}</span>
-        </div>
-      ))}
+        );
+      })}
     </div>
 
     <!-- Agent cards -->
     <p class="section-title">에이전트 상세</p>
     <div class="cards">
       {agents.map(a => {
-        const pct = ((a.tokens / total) * 100).toFixed(1);
+        const ctxPct = a.contextTokens > 0
+          ? Math.min(100, (a.totalTokens / a.contextTokens) * 100)
+          : 0;
+        const ctxPctRaw = a.contextTokens > 0
+          ? ((a.totalTokens / a.contextTokens) * 100).toFixed(1)
+          : '0';
+        const modelShort = a.model.split('/').pop() ?? a.model;
         return (
           <div class="agent-card">
             <div class="agent-header">
-              <span class="agent-emoji">{a.emoji}</span>
-              <div>
-                <p class="agent-name">{a.name} ({a.englishName})</p>
-                <p class="agent-role">{a.role}</p>
+              <div class="agent-identity">
+                <span class="agent-emoji">{a.emoji}</span>
+                <div>
+                  <p class="agent-name">{a.name} ({a.englishName})</p>
+                  <p class="agent-role">{a.role}</p>
+                </div>
+              </div>
+              <span class="model-badge">{modelShort}</span>
+            </div>
+
+            <div class="token-row">
+              <div class="token-block">
+                <p class="token-block-label">Input</p>
+                <p class="token-block-value">{fmt(a.inputTokens)}</p>
+              </div>
+              <div class="token-block">
+                <p class="token-block-label">Output</p>
+                <p class="token-block-value">{fmt(a.outputTokens)}</p>
               </div>
             </div>
-            <p class="agent-tokens">{fmt(a.tokens)}</p>
-            <p class="agent-tokens-label">tokens used</p>
-            <div class="agent-pct-bar">
-              <div
-                class="agent-pct-fill"
-                style={`width: ${pct}%; background: ${a.color};`}
-              ></div>
+
+            <div class="ctx-label">
+              <span>컨텍스트 사용률</span>
+              <span class="ctx-pct">{ctxPctRaw}%</span>
             </div>
-            <p class="agent-pct-text">{pct}% of total</p>
+            <div class="ctx-track">
+              <div class="ctx-fill" style={`width: ${ctxPct}%; background: ${a.color};`}></div>
+            </div>
+
+            <p class="last-activity">
+              마지막 활동: <span class="last-activity-time" data-ts="{a.updatedAt}">로딩 중...</span>
+            </p>
           </div>
         );
       })}
     </div>
 
-    <footer>OpenClaw · 데이터 소스: ~/.openclaw/agents/*/sessions/*.jsonl</footer>
+    <footer>OpenClaw · 데이터 기준: <span id="data-updated">로딩 중...</span></footer>
   </div>
 
-  <script>
+  <script define:vars={{ agentsData: agents, dataUpdatedAt }}>
     // Auth guard
     if (sessionStorage.getItem('oc_auth') !== '1') {
       window.location.replace('/');
     }
 
+    // Logout
     document.getElementById('logout-btn').addEventListener('click', () => {
       sessionStorage.removeItem('oc_auth');
       window.location.replace('/');
     });
+
+    // Theme
+    const toggleBtn = document.getElementById('theme-toggle');
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      toggleBtn.textContent = theme === 'dark' ? '🌙' : '☀️';
+      localStorage.setItem('oc_theme', theme);
+    }
+    applyTheme(document.documentElement.getAttribute('data-theme') || 'dark');
+    toggleBtn.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      applyTheme(current === 'dark' ? 'light' : 'dark');
+    });
+
+    // Relative time
+    function relTime(ms) {
+      if (!ms) return '알 수 없음';
+      const diff = Date.now() - ms;
+      const sec = Math.floor(diff / 1000);
+      if (sec < 60) return '방금 전';
+      const min = Math.floor(sec / 60);
+      if (min < 60) return `${min}분 전`;
+      const hr = Math.floor(min / 60);
+      if (hr < 24) return `${hr}시간 전`;
+      const day = Math.floor(hr / 24);
+      return `${day}일 전`;
+    }
+
+    // Inject last activity per card (data-ts was set as string literal, use JS data instead)
+    const timeEls = document.querySelectorAll('.last-activity-time');
+    agentsData.forEach((agent, i) => {
+      if (timeEls[i]) timeEls[i].textContent = relTime(agent.updatedAt);
+    });
+
+    // Data updated footer
+    const updatedEl = document.getElementById('data-updated');
+    if (updatedEl) {
+      updatedEl.textContent = dataUpdatedAt
+        ? new Date(dataUpdatedAt).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })
+        : '알 수 없음';
+    }
   </script>
 </body>
 </html>
