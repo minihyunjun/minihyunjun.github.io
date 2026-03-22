@@ -96,10 +96,10 @@ def main():
                 latest_at = entry["updatedAt"]
             print(f"  input={entry['inputTokens']}, output={entry['outputTokens']}, total={entry['totalTokens']}")
 
-    out = Path(__file__).parent.parent / "src" / "data" / "tokens.json"
+    out = Path(__file__).parent.parent / "public" / "data" / "tokens.json"
     out.parent.mkdir(parents=True, exist_ok=True)
 
-    payload = {"updatedAt": latest_at or int(time.time() * 1000), "agents": result}
+    payload = {"updatedAt": int(time.time() * 1000), "agents": result}
     with open(out, "w", encoding="utf-8") as f:
         json.dump(payload, f, ensure_ascii=False, indent=2)
 
