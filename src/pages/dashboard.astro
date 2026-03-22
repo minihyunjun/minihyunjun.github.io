@@ -301,55 +301,6 @@
       color: var(--text-faint);
     }
 
-    .server-config {
-      margin-top: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
-    .server-input {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      color: var(--text-muted);
-      font-size: 11px;
-      padding: 4px 8px;
-      width: 200px;
-      outline: none;
-      font-family: inherit;
-    }
-    .server-input:focus { border-color: var(--border-hover); }
-    .server-input::placeholder { color: var(--text-faint); }
-
-    .server-save-btn {
-      background: none;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      color: var(--text-dim);
-      font-size: 11px;
-      padding: 4px 10px;
-      cursor: pointer;
-      font-family: inherit;
-      transition: color 0.15s, border-color 0.15s;
-    }
-    .server-save-btn:hover { color: var(--text); border-color: var(--border-hover); }
-
-    .live-badge {
-      display: inline-block;
-      font-size: 10px;
-      padding: 2px 6px;
-      border-radius: 99px;
-      background: #16a34a22;
-      color: #4ade80;
-      margin-left: 4px;
-    }
-    .live-badge.static {
-      background: var(--badge-bg);
-      color: var(--badge-text);
-    }
 
     @media (max-width: 600px) {
       body { padding: 24px 20px; }
@@ -412,14 +363,7 @@
       <button class="logout-btn" id="logout-btn">로그아웃</button>
     </div>
 
-    <footer>
-      OpenClaw · 최근 갱신: <span id="data-updated">로딩 중...</span>
-      <span id="live-badge" class="live-badge static">static</span>
-    </footer>
-    <div class="server-config">
-      <input class="server-input" id="server-url" placeholder="http://192.168.x.x:8789" />
-      <button class="server-save-btn" id="server-save">저장</button>
-    </div>
+    <footer>OpenClaw · 최근 갱신: <span id="data-updated">로딩 중...</span></footer>
   </div>
 
   <script>
@@ -542,51 +486,14 @@
       document.getElementById('cards').innerHTML = cardsHtml;
     }
 
-    // Server URL config
-    const serverInput = document.getElementById('server-url');
-    const liveBadge = document.getElementById('live-badge');
-    serverInput.value = localStorage.getItem('oc_server') || '';
-
-    document.getElementById('server-save').addEventListener('click', () => {
-      const url = serverInput.value.trim().replace(/\/$/, '');
-      if (url) localStorage.setItem('oc_server', url);
-      else localStorage.removeItem('oc_server');
-      loadData();
-    });
-    serverInput.addEventListener('keydown', e => {
-      if (e.key === 'Enter') document.getElementById('server-save').click();
-    });
-
-    // Fetch data — live server first, static fallback
+    // Fetch data
     const refreshBtn = document.getElementById('refresh-btn');
     async function loadData() {
-      const serverUrl = localStorage.getItem('oc_server');
-      if (serverUrl) {
-        try {
-          const token = localStorage.getItem('oc_server_token') || 'openclaw-dashboard';
-          const res = await fetch(`${serverUrl}/tokens?token=${token}&t=` + Date.now());
-          if (!res.ok) throw new Error(res.status);
-          const data = await res.json();
-          render(data);
-          liveBadge.textContent = 'live';
-          liveBadge.className = 'live-badge';
-          return;
-        } catch (e) {
-          console.warn('Live server unreachable, falling back to static:', e);
-          liveBadge.textContent = 'offline';
-          liveBadge.className = 'live-badge static';
-        }
-      }
-      // Static fallback
       try {
         const res = await fetch('/data/tokens.json?t=' + Date.now());
         if (!res.ok) throw new Error(res.status);
         const data = await res.json();
         render(data);
-        if (!serverUrl) {
-          liveBadge.textContent = 'static';
-          liveBadge.className = 'live-badge static';
-        }
       } catch (e) {
         console.error('Failed to load tokens:', e);
       }

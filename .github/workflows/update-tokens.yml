@@ -3,7 +3,7 @@ name: Update Token Data
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 21 * * *'  # 06:00 KST daily
+    - cron: '*/5 * * * *'
 
 jobs:
   update:
