@@ -159,17 +159,6 @@
     .stat-value { font-size: 18px; font-weight: 600; color: var(--text-sub); }
 
     /* Updated at */
-    .updated-bar {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 6px;
-      margin-bottom: 32px;
-      margin-top: -20px;
-      font-size: 11px;
-      color: var(--text-dim);
-    }
-
     /* Bar chart */
     .bar-section {
       background: var(--surface);
@@ -346,11 +335,6 @@
       </div>
     </div>
 
-    <div class="updated-bar">
-      <span>데이터 기준:</span>
-      <span id="data-updated">로딩 중...</span>
-    </div>
-
     <p class="section-title">에이전트별 비교</p>
     <div class="bar-section" id="bar-section">
       <div style="height:100px" class="skeleton"></div>
@@ -365,7 +349,7 @@
       ))}
     </div>
 
-    <footer>OpenClaw · 5분마다 자동 갱신</footer>
+    <footer>OpenClaw · 최근 갱신: <span id="data-updated">로딩 중...</span></footer>
   </div>
 
   <script>
