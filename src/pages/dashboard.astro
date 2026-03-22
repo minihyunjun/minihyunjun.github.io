@@ -25,8 +25,11 @@ function fmt(n: number) {
       document.documentElement.setAttribute('data-theme', saved || sys);
     })();
   </script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@toss/tossface@1.2.5/dist/tossface.css" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    .emoji { font-family: 'TossFace', sans-serif; }
 
     [data-theme="dark"] {
       --bg: #0d0d0d;
@@ -252,9 +255,11 @@ function fmt(n: number) {
       margin-bottom: 6px;
     }
     .ctx-pct { font-weight: 600; }
+    .ctx-pct.over { color: #f87171; }
 
     .ctx-track { height: 4px; background: var(--bar-track); border-radius: 99px; overflow: hidden; margin-bottom: 14px; }
     .ctx-fill { height: 100%; border-radius: 99px; max-width: 100%; }
+    .ctx-fill.over { background: #f87171 !important; }
 
     /* Last activity */
     .last-activity { font-size: 11px; color: var(--text-dim); }
@@ -322,7 +327,7 @@ function fmt(n: number) {
         return (
           <div class="bar-row">
             <span class="bar-label">
-              <span>{a.emoji}</span>
+              <span class="emoji">{a.emoji}</span>
               <span>{a.name}</span>
             </span>
             <div class="bar-track">
@@ -338,18 +343,16 @@ function fmt(n: number) {
     <p class="section-title">에이전트 상세</p>
     <div class="cards">
       {agents.map(a => {
-        const ctxPct = a.contextTokens > 0
-          ? Math.min(100, (a.totalTokens / a.contextTokens) * 100)
-          : 0;
-        const ctxPctRaw = a.contextTokens > 0
-          ? ((a.totalTokens / a.contextTokens) * 100).toFixed(1)
-          : '0';
+        const ctxRatio = a.contextTokens > 0 ? (a.totalTokens / a.contextTokens) * 100 : 0;
+        const ctxPctRaw = ctxRatio.toFixed(1);
+        const ctxBarWidth = Math.min(100, ctxRatio);
+        const isOver = ctxRatio > 100;
         const modelShort = a.model.split('/').pop() ?? a.model;
         return (
           <div class="agent-card">
             <div class="agent-header">
               <div class="agent-identity">
-                <span class="agent-emoji">{a.emoji}</span>
+                <span class="agent-emoji emoji">{a.emoji}</span>
                 <div>
                   <p class="agent-name">{a.name} ({a.englishName})</p>
                   <p class="agent-role">{a.role}</p>
@@ -371,10 +374,12 @@ function fmt(n: number) {
 
             <div class="ctx-label">
               <span>컨텍스트 사용률</span>
-              <span class="ctx-pct">{ctxPctRaw}%</span>
+              <span class={`ctx-pct${isOver ? ' over' : ''}`}>
+                {ctxPctRaw}%{isOver ? ' ↑초과' : ''}
+              </span>
             </div>
             <div class="ctx-track">
-              <div class="ctx-fill" style={`width: ${ctxPct}%; background: ${a.color};`}></div>
+              <div class={`ctx-fill${isOver ? ' over' : ''}`} style={`width: ${ctxBarWidth}%; background: ${isOver ? '' : a.color};`}></div>
             </div>
 
             <p class="last-activity">
