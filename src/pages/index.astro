@@ -203,17 +203,24 @@
   <script>
     const HASH = 'c3d4c44e848a92a8ffd0d8cdd78dd95c796104c8005346aff46f8c7376671cf4';
 
-    // Theme
+    // Theme — follows system, manual toggle overrides temporarily
     const toggleBtn = document.getElementById('theme-toggle');
-    function applyTheme(theme) {
+    const sysDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+    function applyTheme(theme, manual = false) {
       document.documentElement.setAttribute('data-theme', theme);
       toggleBtn.textContent = theme === 'dark' ? '🌙' : '☀️';
-      localStorage.setItem('oc_theme', theme);
+      if (manual) localStorage.setItem('oc_theme', theme);
     }
-    applyTheme(document.documentElement.getAttribute('data-theme') || 'dark');
+
+    applyTheme(localStorage.getItem('oc_theme') || (sysDark.matches ? 'dark' : 'light'));
+
+    sysDark.addEventListener('change', e => {
+      if (!localStorage.getItem('oc_theme')) applyTheme(e.matches ? 'dark' : 'light');
+    });
+
     toggleBtn.addEventListener('click', () => {
-      const current = document.documentElement.getAttribute('data-theme');
-      applyTheme(current === 'dark' ? 'light' : 'dark');
+      applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark', true);
     });
 
     async function sha256(msg) {
