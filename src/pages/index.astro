@@ -58,35 +58,29 @@
       --toggle-border: #e0e0e0;
     }
 
+    html, body { height: 100%; }
+
     body {
-      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      overflow: hidden;
       background: var(--bg);
       font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       transition: background 0.2s;
-      padding: 24px 0 72px;
-    }
-
-    footer {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      padding: 20px;
-      display: flex;
-      justify-content: center;
     }
 
     .theme-toggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
       background: none;
       border: none;
-      font-size: 24px;
+      font-size: 18px;
       font-family: Tossface;
       cursor: pointer;
-      opacity: 0.5;
+      opacity: 0.4;
       transition: opacity 0.15s;
       padding: 4px;
       line-height: 1;
@@ -121,18 +115,12 @@
       letter-spacing: -0.3px;
     }
 
-    h1 {
-      font-size: 22px;
-      font-weight: 600;
-      color: var(--text);
-      margin-bottom: 8px;
-      letter-spacing: -0.4px;
-    }
-
     .subtitle {
-      font-size: 14px;
+      font-size: 18px;
+      font-weight: 300;
       color: var(--text-muted);
       margin-bottom: 32px;
+      letter-spacing: -0.3px;
     }
 
     label {
@@ -192,7 +180,6 @@
       <span class="logo-icon tossface">🐾</span>
       <span class="logo-text">ZPD</span>
     </div>
-    <h1>대시보드 접근</h1>
     <p class="subtitle">비밀번호를 입력하세요</p>
 
     <label for="password">Password</label>
@@ -204,9 +191,7 @@
     <button class="submit" id="submit-btn">입장하기</button>
   </div>
 
-  <footer>
-    <button class="theme-toggle" id="theme-toggle" title="테마 전환">🌙</button>
-  </footer>
+  <button class="theme-toggle" id="theme-toggle" title="테마 전환">🌙</button>
 
   <script>
     const HASH = 'c3d4c44e848a92a8ffd0d8cdd78dd95c796104c8005346aff46f8c7376671cf4';
