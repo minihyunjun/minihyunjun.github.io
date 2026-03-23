@@ -542,6 +542,7 @@
     }
     .chip:hover { border-color: var(--border-hover); color: var(--text); }
     .chip.selected { background: var(--text); color: var(--bg); border-color: var(--text); }
+    [data-theme="light"] .chip.selected { background: rgba(0,0,0,0.07); color: var(--text); border-color: rgba(0,0,0,0.22); }
     [data-theme="dark"] .chip.selected { background: rgba(255,255,255,0.13); color: var(--text); border-color: rgba(255,255,255,0.32); }
 
     .chip.priority-high.selected   { background: #fee2e2; border-color: #ef4444; color: #dc2626; }
@@ -694,7 +695,7 @@
         </div>
         <div class="kanban-col">
           <div class="kanban-col-header">
-            <span class="kanban-col-title">시작</span>
+            <span class="kanban-col-title">진행 중</span>
             <span class="kanban-col-count" id="count-doing">0</span>
           </div>
           <div id="col-doing"></div>
@@ -743,7 +744,7 @@
         <label class="form-label">초기 상태</label>
         <div class="chip-group" id="task-col">
           <button type="button" class="chip selected" data-value="todo">대기</button>
-          <button type="button" class="chip" data-value="doing">시작</button>
+          <button type="button" class="chip" data-value="doing">진행 중</button>
         </div>
       </div>
       <div class="modal-actions">
@@ -788,7 +789,7 @@
         <label class="form-label">상태</label>
         <div class="chip-group" id="detail-col">
           <button type="button" class="chip selected" data-value="todo">대기</button>
-          <button type="button" class="chip" data-value="doing">시작</button>
+          <button type="button" class="chip" data-value="doing">진행 중</button>
           <button type="button" class="chip" data-value="done">완료</button>
         </div>
       </div>
