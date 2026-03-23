@@ -40,6 +40,10 @@
       --toggle-bg: #2a2a2a;
       --toggle-hover: #333;
       --skeleton: #1e1e1e;
+      --tab-active-bg: #222;
+      --kanban-bg: #111;
+      --kanban-card-bg: #1a1a1a;
+      --tag-bg: #222;
     }
 
     [data-theme="light"] {
@@ -62,6 +66,10 @@
       --toggle-bg: #efefef;
       --toggle-hover: #e0e0e0;
       --skeleton: #ebebeb;
+      --tab-active-bg: #fff;
+      --kanban-bg: #f0f0f0;
+      --kanban-card-bg: #fff;
+      --tag-bg: #eee;
     }
 
     .tossface { font-family: Tossface; }
@@ -75,14 +83,14 @@
       transition: background 0.2s, color 0.2s;
     }
 
-    .container { max-width: 900px; margin: 0 auto; }
+    .container { max-width: 960px; margin: 0 auto; }
 
     /* Header */
     header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 48px;
+      margin-bottom: 32px;
       gap: 12px;
     }
 
@@ -91,7 +99,6 @@
     .logo h1 { font-size: 20px; font-weight: 600; color: var(--text); letter-spacing: -0.3px; white-space: nowrap; }
 
     .header-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-
 
     .logout-btn {
       background: none;
@@ -106,6 +113,33 @@
     }
     .logout-btn:hover { color: var(--btn-hover-color); border-color: var(--btn-hover-border); }
 
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 32px;
+    }
+    .tab-btn {
+      background: none;
+      border: none;
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: color 0.15s, border-color 0.15s;
+      font-family: inherit;
+    }
+    .tab-btn:hover { color: var(--text-sub); }
+    .tab-btn.active { color: var(--text); border-bottom-color: var(--text); }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* Section title */
     .section-title {
       font-size: 12px;
       font-weight: 500;
@@ -139,7 +173,6 @@
     .stat-label { font-size: 11px; color: var(--text-dim); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
     .stat-value { font-size: 18px; font-weight: 600; color: var(--text-sub); }
 
-    /* Updated at */
     /* Bar chart */
     .bar-section {
       background: var(--surface);
@@ -158,7 +191,6 @@
     }
     .bar-row:last-child { margin-bottom: 0; }
     .bar-label { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: var(--text-sub); }
-    .bar-label .tossface { }
     .bar-track { height: 10px; background: var(--bar-track); border-radius: 99px; overflow: hidden; }
     .bar-fill { height: 100%; border-radius: 99px; transition: width 0.8s cubic-bezier(0.4,0,0.2,1); }
     .bar-count { font-size: 13px; color: var(--text-muted); text-align: right; font-variant-numeric: tabular-nums; }
@@ -221,12 +253,10 @@
       margin-top: 2px;
     }
 
-    /* Token row */
     .token-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
     .token-block-label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
     .token-block-value { font-size: 20px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
 
-    /* Context bar */
     .ctx-label {
       display: flex;
       justify-content: space-between;
@@ -245,7 +275,6 @@
     .ctx-fill { height: 100%; border-radius: 99px; max-width: 100%; transition: width 0.8s cubic-bezier(0.4,0,0.2,1); }
     .ctx-fill.over { background: #f87171 !important; }
 
-    /* Last activity */
     .last-activity { font-size: 11px; color: var(--text-dim); }
     .last-activity-time { color: var(--text-muted); }
 
@@ -257,6 +286,172 @@
     }
     @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
 
+    /* ===== KANBAN ===== */
+    .kanban {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .kanban-col {
+      background: var(--kanban-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+    }
+
+    .kanban-col-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .kanban-col-title {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-muted);
+    }
+
+    .kanban-count {
+      font-size: 11px;
+      font-weight: 600;
+      background: var(--badge-bg);
+      color: var(--badge-text);
+      padding: 2px 7px;
+      border-radius: 99px;
+    }
+
+    .kanban-cards { display: flex; flex-direction: column; gap: 10px; min-height: 60px; }
+
+    .task-card {
+      background: var(--kanban-card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      transition: border-color 0.15s;
+    }
+    .task-card:hover { border-color: var(--border-hover); }
+
+    .task-card-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px; line-height: 1.4; }
+    .task-card-desc { font-size: 11px; color: var(--text-dim); line-height: 1.5; margin-bottom: 10px; }
+
+    .task-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .assignee-tag {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      color: var(--text-muted);
+      background: var(--tag-bg);
+      padding: 2px 8px;
+      border-radius: 99px;
+    }
+
+    .task-actions { display: flex; gap: 4px; }
+
+    .task-btn {
+      background: none;
+      border: 1px solid var(--btn-border);
+      color: var(--btn-color);
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+      font-family: inherit;
+    }
+    .task-btn:hover { color: var(--btn-hover-color); border-color: var(--btn-hover-border); }
+
+    .kanban-empty {
+      font-size: 12px;
+      color: var(--text-faint);
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    /* ===== AGENT TAB ===== */
+    .agent-panels { display: flex; flex-direction: column; gap: 24px; }
+
+    .agent-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    .agent-panel-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    /* Pixel art */
+    .pixel-art {
+      width: 48px;
+      height: 48px;
+      image-rendering: pixelated;
+      flex-shrink: 0;
+    }
+
+    .pixel-canvas {
+      width: 48px;
+      height: 48px;
+      image-rendering: pixelated;
+    }
+
+    .agent-panel-info { flex: 1; }
+    .agent-panel-name { font-size: 16px; font-weight: 700; color: var(--text); }
+    .agent-panel-role { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+    .agent-panel-model {
+      background: var(--badge-bg);
+      color: var(--badge-text);
+      font-size: 10px;
+      font-weight: 500;
+      padding: 3px 8px;
+      border-radius: 99px;
+      white-space: nowrap;
+    }
+
+    .agent-tasks { display: flex; flex-direction: column; gap: 8px; }
+
+    .agent-task-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 12px;
+    }
+
+    .agent-task-status {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 3px;
+    }
+    .agent-task-status.in_progress { background: #fbbf24; }
+    .agent-task-status.done { background: #6ee7b7; }
+    .agent-task-status.archive { background: var(--text-faint); }
+
+    .agent-task-title { color: var(--text-sub); line-height: 1.4; }
+    .agent-task-status-text { font-size: 10px; color: var(--text-dim); margin-top: 2px; }
+
+    .agent-no-tasks { font-size: 12px; color: var(--text-faint); padding: 8px 0; }
+
+    /* Bottom */
     .bottom-actions {
       display: flex;
       align-items: center;
@@ -285,12 +480,10 @@
       color: var(--text-faint);
     }
 
-
-
-    @media (max-width: 600px) {
-      body { padding: 24px 20px; }
-      header { margin-bottom: 28px; }
-      .logo h1 { font-size: 18px; }
+    @media (max-width: 700px) {
+      body { padding: 24px 16px; }
+      header { margin-bottom: 20px; }
+      .kanban { grid-template-columns: 1fr; }
       .summary { flex-direction: column; gap: 20px; }
       .summary-stats { gap: 20px; }
       .stat-item { text-align: left; }
@@ -307,47 +500,92 @@
         <span class="logo-emoji tossface">🐾</span>
         <h1>OpenClaw Dashboard</h1>
       </div>
+      <div class="header-actions">
+        <button class="icon-btn" id="theme-toggle" title="테마 전환">🌙</button>
+        <button class="logout-btn" id="logout-btn">로그아웃</button>
+      </div>
     </header>
 
-    <p class="section-title">전체 요약</p>
-    <div class="summary" id="summary">
-      <div class="summary-main">
-        <p class="summary-label">총 토큰 사용량</p>
-        <p class="summary-value" id="total-used">—</p>
-        <p class="summary-sub">에이전트 3명 합산</p>
-      </div>
-      <div class="summary-stats">
-        <div class="stat-item">
-          <p class="stat-label">Input</p>
-          <p class="stat-value" id="total-input">—</p>
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="status">현황</button>
+      <button class="tab-btn" data-tab="tasks">태스크</button>
+      <button class="tab-btn" data-tab="agents">에이전트</button>
+    </div>
+
+    <!-- Tab: 현황 -->
+    <div class="tab-panel active" id="tab-status">
+      <p class="section-title">전체 요약</p>
+      <div class="summary" id="summary">
+        <div class="summary-main">
+          <p class="summary-label">총 토큰 사용량</p>
+          <p class="summary-value" id="total-used">—</p>
+          <p class="summary-sub">에이전트 3명 합산</p>
         </div>
-        <div class="stat-item">
-          <p class="stat-label">Output</p>
-          <p class="stat-value" id="total-output">—</p>
+        <div class="summary-stats">
+          <div class="stat-item">
+            <p class="stat-label">Input</p>
+            <p class="stat-value" id="total-input">—</p>
+          </div>
+          <div class="stat-item">
+            <p class="stat-label">Output</p>
+            <p class="stat-value" id="total-output">—</p>
+          </div>
+        </div>
+      </div>
+
+      <p class="section-title">에이전트별 비교</p>
+      <div class="bar-section" id="bar-section">
+        <div style="height:100px" class="skeleton"></div>
+      </div>
+
+      <p class="section-title">에이전트 상세</p>
+      <div class="cards" id="cards">
+        {[1,2,3].map(() => (
+          <div class="agent-card">
+            <div style="height:160px" class="skeleton"></div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Tab: 태스크 -->
+    <div class="tab-panel" id="tab-tasks">
+      <div class="kanban" id="kanban">
+        <div class="kanban-col">
+          <div class="kanban-col-header">
+            <span class="kanban-col-title">진행중</span>
+            <span class="kanban-count" id="count-in_progress">0</span>
+          </div>
+          <div class="kanban-cards" id="col-in_progress"></div>
+        </div>
+        <div class="kanban-col">
+          <div class="kanban-col-header">
+            <span class="kanban-col-title">완료</span>
+            <span class="kanban-count" id="count-done">0</span>
+          </div>
+          <div class="kanban-cards" id="col-done"></div>
+        </div>
+        <div class="kanban-col">
+          <div class="kanban-col-header">
+            <span class="kanban-col-title">아카이브</span>
+            <span class="kanban-count" id="count-archive">0</span>
+          </div>
+          <div class="kanban-cards" id="col-archive"></div>
         </div>
       </div>
     </div>
 
-    <p class="section-title">에이전트별 비교</p>
-    <div class="bar-section" id="bar-section">
-      <div style="height:100px" class="skeleton"></div>
-    </div>
-
-    <p class="section-title">에이전트 상세</p>
-    <div class="cards" id="cards">
-      {[1,2,3].map(() => (
-        <div class="agent-card">
-          <div style="height:160px" class="skeleton"></div>
-        </div>
-      ))}
+    <!-- Tab: 에이전트 -->
+    <div class="tab-panel" id="tab-agents">
+      <div class="agent-panels" id="agent-panels">
+        <div style="height:200px" class="skeleton"></div>
+      </div>
     </div>
 
     <div class="bottom-actions">
-      <button class="icon-btn" id="theme-toggle" title="테마 전환">🌙</button>
-      <button class="logout-btn" id="logout-btn">로그아웃</button>
+      <footer>OpenClaw · 최근 갱신: <span id="data-updated">로딩 중...</span></footer>
     </div>
-
-    <footer>OpenClaw · 최근 갱신: <span id="data-updated">로딩 중...</span></footer>
   </div>
 
   <script>
@@ -356,13 +594,12 @@
       window.location.replace('/');
     }
 
-    // Logout
     document.getElementById('logout-btn').addEventListener('click', () => {
       sessionStorage.removeItem('oc_auth');
       window.location.replace('/');
     });
 
-    // Theme — follows system, manual toggle overrides temporarily
+    // Theme
     const themeBtn = document.getElementById('theme-toggle');
     const sysDark = window.matchMedia('(prefers-color-scheme: dark)');
 
@@ -372,22 +609,25 @@
       if (manual) localStorage.setItem('oc_theme', theme);
     }
 
-    // Init: localStorage override or system default
     applyTheme(localStorage.getItem('oc_theme') || (sysDark.matches ? 'dark' : 'light'));
-
-    // Follow system changes (only if no manual override)
     sysDark.addEventListener('change', e => {
-      if (!localStorage.getItem('oc_theme')) {
-        applyTheme(e.matches ? 'dark' : 'light');
-      }
+      if (!localStorage.getItem('oc_theme')) applyTheme(e.matches ? 'dark' : 'light');
     });
-
     themeBtn.addEventListener('click', () => {
-      const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-      applyTheme(next, true);
+      applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark', true);
     });
 
-    // Utilities
+    // Tabs
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    // Utils
     function fmt(n) { return (n || 0).toLocaleString('ko-KR'); }
     function relTime(ms) {
       if (!ms) return '알 수 없음';
@@ -401,8 +641,117 @@
       return `${Math.floor(hr / 24)}일 전`;
     }
 
-    // Render
-    function render(data) {
+    // ===== PIXEL ART =====
+    // Simple 8x8 pixel sprites per agent (color palette indices)
+    const SPRITES = {
+      gary: {
+        // Snake — green, sinuous body
+        palette: ['', '#3d9970', '#2ecc71', '#27ae60', '#1a7a46', '#f0f0f0'],
+        frames: [
+          [
+            0,0,0,2,2,0,0,0,
+            0,0,2,3,3,2,0,0,
+            0,2,3,5,3,3,2,0,
+            0,2,3,3,3,3,2,0,
+            0,0,2,3,3,2,0,0,
+            0,0,0,2,2,3,2,0,
+            0,0,0,0,2,3,2,0,
+            0,0,0,0,0,2,0,0,
+          ],
+          [
+            0,0,0,2,2,0,0,0,
+            0,0,2,3,3,2,0,0,
+            0,2,3,5,3,3,2,0,
+            0,2,3,3,3,3,2,0,
+            0,0,2,3,3,3,2,0,
+            0,0,0,2,2,3,2,0,
+            0,0,0,0,2,2,0,0,
+            0,0,0,0,0,0,0,0,
+          ],
+        ]
+      },
+      judy: {
+        // Rabbit — white/lavender
+        palette: ['', '#c4b5fd', '#a78bfa', '#7c3aed', '#f3f0ff', '#f87171'],
+        frames: [
+          [
+            0,1,0,0,0,0,1,0,
+            0,1,0,0,0,0,1,0,
+            0,4,4,4,4,4,4,0,
+            4,4,5,4,4,5,4,4,
+            4,4,4,4,4,4,4,4,
+            0,4,2,4,4,2,4,0,
+            0,0,4,4,4,4,0,0,
+            0,1,0,0,0,0,1,0,
+          ],
+          [
+            1,0,0,0,0,0,0,1,
+            1,0,0,0,0,0,0,1,
+            0,4,4,4,4,4,4,0,
+            4,4,5,4,4,5,4,4,
+            4,4,4,4,4,4,4,4,
+            0,4,2,4,4,2,4,0,
+            0,0,4,4,4,4,0,0,
+            0,0,1,0,0,1,0,0,
+          ],
+        ]
+      },
+      nick: {
+        // Fox — orange/rust
+        palette: ['', '#f97316', '#ea580c', '#c2410c', '#fed7aa', '#1e1e1e'],
+        frames: [
+          [
+            1,0,0,0,0,0,0,1,
+            1,1,0,0,0,0,1,1,
+            0,1,4,4,4,4,1,0,
+            0,4,4,5,5,4,4,0,
+            0,4,4,4,4,4,4,0,
+            0,0,2,4,4,2,0,0,
+            0,1,0,4,4,0,1,0,
+            1,0,0,0,0,0,0,1,
+          ],
+          [
+            0,1,0,0,0,0,1,0,
+            1,1,0,0,0,0,1,1,
+            0,1,4,4,4,4,1,0,
+            0,4,4,5,5,4,4,0,
+            0,4,4,4,4,4,4,0,
+            0,0,2,4,4,2,0,0,
+            0,1,0,4,4,0,1,0,
+            0,1,0,0,0,0,1,0,
+          ],
+        ]
+      }
+    };
+
+    function drawSprite(canvas, sprite, frameIdx) {
+      const ctx = canvas.getContext('2d');
+      const size = 8;
+      const scale = canvas.width / size;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const frame = sprite.frames[frameIdx % sprite.frames.length];
+      for (let i = 0; i < size * size; i++) {
+        const c = sprite.palette[frame[i]];
+        if (!c) continue;
+        ctx.fillStyle = c;
+        ctx.fillRect((i % size) * scale, Math.floor(i / size) * scale, scale, scale);
+      }
+    }
+
+    const animTimers = {};
+    function startAnim(canvas, agentId) {
+      const sprite = SPRITES[agentId];
+      if (!sprite) return;
+      let frame = 0;
+      drawSprite(canvas, sprite, frame);
+      animTimers[agentId] = setInterval(() => {
+        frame = (frame + 1) % sprite.frames.length;
+        drawSprite(canvas, sprite, frame);
+      }, 600);
+    }
+
+    // ===== RENDER TOKENS =====
+    function renderTokens(data) {
       const agents = data.agents || [];
       const totalInput = agents.reduce((s, a) => s + (a.inputTokens || 0), 0);
       const totalOutput = agents.reduce((s, a) => s + (a.outputTokens || 0), 0);
@@ -415,75 +764,186 @@
         ? new Date(data.updatedAt).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })
         : '알 수 없음';
 
-      // Bar chart
-      const barHtml = agents.map(a => {
+      document.getElementById('bar-section').innerHTML = agents.map(a => {
         const used = (a.inputTokens || 0) + (a.outputTokens || 0);
         const pct = totalUsed > 0 ? ((used / totalUsed) * 100).toFixed(1) : '0';
-        return `
-          <div class="bar-row">
-            <span class="bar-label"><span class="tossface">${a.emoji}</span><span>${a.name}</span></span>
-            <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${a.color}"></div></div>
-            <span class="bar-count">${fmt(used)}</span>
-          </div>`;
+        return `<div class="bar-row">
+          <span class="bar-label"><span class="tossface">${a.emoji}</span><span>${a.name}</span></span>
+          <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${a.color}"></div></div>
+          <span class="bar-count">${fmt(used)}</span>
+        </div>`;
       }).join('');
-      document.getElementById('bar-section').innerHTML = barHtml;
 
-      // Cards
-      const cardsHtml = agents.map(a => {
+      document.getElementById('cards').innerHTML = agents.map(a => {
         const ctxRatio = a.contextTokens > 0 ? (a.totalTokens / a.contextTokens) * 100 : 0;
         const ctxBarWidth = Math.min(100, ctxRatio);
         const isOver = ctxRatio > 100;
         const modelShort = (a.model || '').split('/').pop() || a.model;
-        return `
-          <div class="agent-card">
-            <div class="agent-header">
-              <div class="agent-identity">
-                <span class="agent-emoji tossface">${a.emoji}</span>
-                <div class="agent-info">
-                  <p class="agent-name">${a.name} (${a.englishName})</p>
-                  <p class="agent-role">${a.role}</p>
-                </div>
-              </div>
-              <span class="model-badge">${modelShort}</span>
-            </div>
-            <div class="token-row">
-              <div class="token-block">
-                <p class="token-block-label">Input</p>
-                <p class="token-block-value">${fmt(a.inputTokens)}</p>
-              </div>
-              <div class="token-block">
-                <p class="token-block-label">Output</p>
-                <p class="token-block-value">${fmt(a.outputTokens)}</p>
+        return `<div class="agent-card">
+          <div class="agent-header">
+            <div class="agent-identity">
+              <span class="agent-emoji tossface">${a.emoji}</span>
+              <div class="agent-info">
+                <p class="agent-name">${a.name} (${a.englishName})</p>
+                <p class="agent-role">${a.role}</p>
               </div>
             </div>
-            <div class="ctx-label">
-              <span class="ctx-label-left">컨텍스트 사용량</span>
-              <span class="ctx-tokens">${fmt(a.totalTokens)} / ${fmt(a.contextTokens)}</span>
-              <span class="ctx-pct${isOver ? ' over' : ''}">${ctxRatio.toFixed(1)}%${isOver ? ' ↑' : ''}</span>
+            <span class="model-badge">${modelShort}</span>
+          </div>
+          <div class="token-row">
+            <div class="token-block">
+              <p class="token-block-label">Input</p>
+              <p class="token-block-value">${fmt(a.inputTokens)}</p>
             </div>
-            <div class="ctx-track">
-              <div class="ctx-fill${isOver ? ' over' : ''}" style="width:${ctxBarWidth}%;${isOver ? '' : `background:${a.color}`}"></div>
+            <div class="token-block">
+              <p class="token-block-label">Output</p>
+              <p class="token-block-value">${fmt(a.outputTokens)}</p>
             </div>
-            <p class="last-activity">마지막 활동: <span class="last-activity-time">${relTime(a.updatedAt)}</span></p>
-          </div>`;
+          </div>
+          <div class="ctx-label">
+            <span class="ctx-label-left">컨텍스트 사용량</span>
+            <span class="ctx-tokens">${fmt(a.totalTokens)} / ${fmt(a.contextTokens)}</span>
+            <span class="ctx-pct${isOver ? ' over' : ''}">${ctxRatio.toFixed(1)}%${isOver ? ' ↑' : ''}</span>
+          </div>
+          <div class="ctx-track">
+            <div class="ctx-fill${isOver ? ' over' : ''}" style="width:${ctxBarWidth}%;${isOver ? '' : `background:${a.color}`}"></div>
+          </div>
+          <p class="last-activity">마지막 활동: <span class="last-activity-time">${relTime(a.updatedAt)}</span></p>
+        </div>`;
       }).join('');
-      document.getElementById('cards').innerHTML = cardsHtml;
     }
 
-    // Fetch data
-    async function loadData() {
-      try {
-        const res = await fetch('/data/tokens.json?t=' + Date.now());
-        if (!res.ok) throw new Error(res.status);
-        const data = await res.json();
-        render(data);
-      } catch (e) {
-        console.error('Failed to load tokens:', e);
+    // ===== TASK STATE =====
+    let taskData = null;
+    const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
+
+    const AGENT_EMOJI = { gary: '🐍', judy: '🐰', nick: '🦊' };
+    const AGENT_NAME = { gary: '개리', judy: '주디', nick: '닉' };
+
+    const STATUS_NEXT = { in_progress: 'done', done: 'archive' };
+    const STATUS_PREV = { done: 'in_progress', archive: 'done' };
+    const STATUS_LABEL = { in_progress: '진행중', done: '완료', archive: '아카이브' };
+
+    function autoArchive(tasks) {
+      const now = Date.now();
+      return tasks.map(t => {
+        if (t.status === 'done' && t.completedAt && (now - t.completedAt) > SEVEN_DAYS) {
+          return { ...t, status: 'archive' };
+        }
+        return t;
+      });
+    }
+
+    function renderKanban(tasks) {
+      tasks = autoArchive(tasks);
+      const cols = { in_progress: [], done: [], archive: [] };
+      tasks.forEach(t => { if (cols[t.status]) cols[t.status].push(t); });
+
+      for (const [status, items] of Object.entries(cols)) {
+        document.getElementById('count-' + status).textContent = items.length;
+        const container = document.getElementById('col-' + status);
+        if (items.length === 0) {
+          container.innerHTML = '<p class="kanban-empty">없음</p>';
+          continue;
+        }
+        container.innerHTML = items.map(t => {
+          const emoji = AGENT_EMOJI[t.assignee] || '';
+          const name = AGENT_NAME[t.assignee] || t.assignee;
+          const nextLabel = STATUS_NEXT[status] ? `→ ${STATUS_LABEL[STATUS_NEXT[status]]}` : null;
+          const prevLabel = STATUS_PREV[status] ? `← ${STATUS_LABEL[STATUS_PREV[status]]}` : null;
+          return `<div class="task-card">
+            <p class="task-card-title">${t.title}</p>
+            ${t.description ? `<p class="task-card-desc">${t.description}</p>` : ''}
+            <div class="task-card-footer">
+              <span class="assignee-tag"><span class="tossface">${emoji}</span>${name}</span>
+              <div class="task-actions">
+                ${prevLabel ? `<button class="task-btn" onclick="moveTask('${t.id}','${STATUS_PREV[status]}')">${prevLabel}</button>` : ''}
+                ${nextLabel ? `<button class="task-btn" onclick="moveTask('${t.id}','${STATUS_NEXT[status]}')">${nextLabel}</button>` : ''}
+              </div>
+            </div>
+          </div>`;
+        }).join('');
       }
     }
 
-    setInterval(loadData, 5 * 60 * 1000);
-    loadData();
+    window.moveTask = function(id, newStatus) {
+      if (!taskData) return;
+      taskData.tasks = taskData.tasks.map(t => {
+        if (t.id !== id) return t;
+        const updated = { ...t, status: newStatus };
+        if (newStatus === 'done' && !t.completedAt) updated.completedAt = Date.now();
+        if (newStatus === 'in_progress') updated.completedAt = null;
+        return updated;
+      });
+      renderKanban(taskData.tasks);
+    };
+
+    // ===== AGENT PANEL =====
+    function renderAgentPanels(agents, tasks) {
+      // Stop old anims
+      Object.values(animTimers).forEach(clearInterval);
+
+      const panels = agents.map(a => {
+        const agentTasks = tasks.filter(t => t.assignee === a.id);
+        const modelShort = (a.model || '').split('/').pop();
+        const taskHtml = agentTasks.length === 0
+          ? '<p class="agent-no-tasks">배정된 태스크 없음</p>'
+          : agentTasks.map(t => `
+            <div class="agent-task-item">
+              <div class="agent-task-status ${t.status}"></div>
+              <div>
+                <p class="agent-task-title">${t.title}</p>
+                <p class="agent-task-status-text">${STATUS_LABEL[t.status] || t.status}</p>
+              </div>
+            </div>`).join('');
+
+        return `<div class="agent-panel">
+          <div class="agent-panel-header">
+            <canvas class="pixel-canvas" id="px-${a.id}" width="48" height="48"></canvas>
+            <div class="agent-panel-info">
+              <p class="agent-panel-name"><span class="tossface">${a.emoji}</span> ${a.name} (${a.englishName})</p>
+              <p class="agent-panel-role">${a.role}</p>
+            </div>
+            <span class="agent-panel-model">${modelShort}</span>
+          </div>
+          <div class="agent-tasks">${taskHtml}</div>
+        </div>`;
+      }).join('');
+
+      document.getElementById('agent-panels').innerHTML = panels;
+
+      // Start pixel art animations
+      agents.forEach(a => {
+        const canvas = document.getElementById('px-' + a.id);
+        if (canvas) startAnim(canvas, a.id);
+      });
+    }
+
+    // ===== LOAD =====
+    let tokenData = null;
+
+    async function loadAll() {
+      try {
+        const [tokRes, taskRes] = await Promise.all([
+          fetch('/data/tokens.json?t=' + Date.now()),
+          fetch('/data/tasks.json?t=' + Date.now()),
+        ]);
+        if (tokRes.ok) {
+          tokenData = await tokRes.json();
+          renderTokens(tokenData);
+        }
+        if (taskRes.ok) {
+          taskData = await taskRes.json();
+          renderKanban(taskData.tasks);
+          if (tokenData) renderAgentPanels(tokenData.agents, taskData.tasks);
+        }
+      } catch (e) {
+        console.error('Load failed:', e);
+      }
+    }
+
+    setInterval(loadAll, 5 * 60 * 1000);
+    loadAll();
   </script>
 </body>
 </html>

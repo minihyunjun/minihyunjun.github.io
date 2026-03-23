@@ -1,0 +1,59 @@
+{
+  "updatedAt": 1742774400000,
+  "tasks": [
+    {
+      "id": "task-001",
+      "title": "대시보드 태스크 보드 구현",
+      "description": "칸반 형태의 태스크 보드 추가 (진행중/완료/아카이브)",
+      "assignee": "judy",
+      "status": "done",
+      "createdAt": 1742688000000,
+      "completedAt": 1742774400000
+    },
+    {
+      "id": "task-002",
+      "title": "에이전트 탭 픽셀아트 애니메이션",
+      "description": "각 에이전트별 픽셀아트 캐릭터 애니메이션 추가",
+      "assignee": "judy",
+      "status": "in_progress",
+      "createdAt": 1742774400000,
+      "completedAt": null
+    },
+    {
+      "id": "task-003",
+      "title": "데일리 뉴스 키워드 필터링 개선",
+      "description": "GPT-4o 키워드 추출 프롬프트 개선 및 카테고리 정밀화",
+      "assignee": "gary",
+      "status": "in_progress",
+      "createdAt": 1742774400000,
+      "completedAt": null
+    },
+    {
+      "id": "task-004",
+      "title": "GitHub Actions 토큰 갱신 자동화",
+      "description": "세션 만료 후 토큰 자동 갱신 워크플로우 작성",
+      "assignee": "nick",
+      "status": "in_progress",
+      "createdAt": 1742600000000,
+      "completedAt": null
+    },
+    {
+      "id": "task-005",
+      "title": "Discord 메시지 포매팅 통일",
+      "description": "에이전트별 응답 포맷 가이드라인 수립",
+      "assignee": "gary",
+      "status": "done",
+      "createdAt": 1742500000000,
+      "completedAt": 1742600000000
+    },
+    {
+      "id": "task-006",
+      "title": "Ollama 모델 성능 벤치마크",
+      "description": "qwen2.5-coder:14b vs llama3.1:8b 응답속도 비교",
+      "assignee": "nick",
+      "status": "archive",
+      "createdAt": 1742000000000,
+      "completedAt": 1742100000000
+    }
+  ]
+}
