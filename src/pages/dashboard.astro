@@ -542,6 +542,7 @@
     }
     .chip:hover { border-color: var(--border-hover); color: var(--text); }
     .chip.selected { background: var(--text); color: var(--bg); border-color: var(--text); }
+    [data-theme="dark"] .chip.selected { background: rgba(255,255,255,0.13); color: var(--text); border-color: rgba(255,255,255,0.32); }
 
     .chip.priority-high.selected   { background: #fee2e2; border-color: #ef4444; color: #dc2626; }
     .chip.priority-medium.selected { background: #fef3c7; border-color: #f59e0b; color: #b45309; }
@@ -686,14 +687,14 @@
       <div class="kanban-board">
         <div class="kanban-col">
           <div class="kanban-col-header">
-            <span class="kanban-col-title">할 일</span>
+            <span class="kanban-col-title">대기</span>
             <span class="kanban-col-count" id="count-todo">0</span>
           </div>
           <div id="col-todo"></div>
         </div>
         <div class="kanban-col">
           <div class="kanban-col-header">
-            <span class="kanban-col-title">진행 중</span>
+            <span class="kanban-col-title">시작</span>
             <span class="kanban-col-count" id="count-doing">0</span>
           </div>
           <div id="col-doing"></div>
@@ -725,7 +726,6 @@
       <div class="form-group">
         <label class="form-label">에이전트</label>
         <div class="chip-group" id="task-agent">
-          <button type="button" class="chip selected" data-value="">없음</button>
           <button type="button" class="chip" data-value="gary"><span class="tossface">🐍</span>개리</button>
           <button type="button" class="chip" data-value="judy"><span class="tossface">🐰</span>주디</button>
           <button type="button" class="chip" data-value="nick"><span class="tossface">🦊</span>닉</button>
@@ -742,9 +742,8 @@
       <div class="form-group">
         <label class="form-label">초기 상태</label>
         <div class="chip-group" id="task-col">
-          <button type="button" class="chip selected" data-value="todo">할 일</button>
-          <button type="button" class="chip" data-value="doing">진행 중</button>
-          <button type="button" class="chip" data-value="done">완료</button>
+          <button type="button" class="chip selected" data-value="todo">대기</button>
+          <button type="button" class="chip" data-value="doing">시작</button>
         </div>
       </div>
       <div class="modal-actions">
@@ -772,7 +771,6 @@
       <div class="form-group">
         <label class="form-label">에이전트</label>
         <div class="chip-group" id="detail-agent">
-          <button type="button" class="chip selected" data-value="">없음</button>
           <button type="button" class="chip" data-value="gary"><span class="tossface">🐍</span>개리</button>
           <button type="button" class="chip" data-value="judy"><span class="tossface">🐰</span>주디</button>
           <button type="button" class="chip" data-value="nick"><span class="tossface">🦊</span>닉</button>
@@ -789,8 +787,8 @@
       <div class="form-group">
         <label class="form-label">상태</label>
         <div class="chip-group" id="detail-col">
-          <button type="button" class="chip selected" data-value="todo">할 일</button>
-          <button type="button" class="chip" data-value="doing">진행 중</button>
+          <button type="button" class="chip selected" data-value="todo">대기</button>
+          <button type="button" class="chip" data-value="doing">시작</button>
           <button type="button" class="chip" data-value="done">완료</button>
         </div>
       </div>
