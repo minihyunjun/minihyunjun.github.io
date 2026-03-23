@@ -22,6 +22,7 @@
 
     [data-theme="dark"] {
       --bg: #0d0d0d;
+      --nav-bg: rgba(13,13,13,0.85);
       --surface: #161616;
       --border: #2a2a2a;
       --border-hover: #3a3a3a;
@@ -37,13 +38,16 @@
       --btn-hover-border: #555;
       --badge-bg: #242424;
       --badge-text: #888;
-      --toggle-bg: #2a2a2a;
-      --toggle-hover: #333;
       --skeleton: #1e1e1e;
+      --tab-active-bg: rgba(255,255,255,0.08);
+      --tab-active-text: #e8e8e8;
+      --kanban-col-bg: #111;
+      --card-add-border: #2a2a2a;
     }
 
     [data-theme="light"] {
       --bg: #f5f5f5;
+      --nav-bg: rgba(245,245,245,0.85);
       --surface: #ffffff;
       --border: #e0e0e0;
       --border-hover: #c0c0c0;
@@ -59,9 +63,11 @@
       --btn-hover-border: #999;
       --badge-bg: #f0f0f0;
       --badge-text: #666;
-      --toggle-bg: #efefef;
-      --toggle-hover: #e0e0e0;
       --skeleton: #ebebeb;
+      --tab-active-bg: rgba(0,0,0,0.06);
+      --tab-active-text: #1a1a1a;
+      --kanban-col-bg: #efefef;
+      --card-add-border: #e0e0e0;
     }
 
     .tossface { font-family: Tossface; }
@@ -71,84 +77,149 @@
       background: var(--bg);
       color: var(--text);
       font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      padding: 40px 24px;
       transition: background 0.2s, color 0.2s;
     }
 
-    .container { max-width: 900px; margin: 0 auto; }
-
-    /* Header */
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 48px;
-      gap: 12px;
+    /* ── Navbar ── */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--nav-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
     }
 
-    .logo { display: flex; align-items: center; gap: 10px; min-width: 0; }
-    .logo .logo-emoji { font-size: 26px; flex-shrink: 0; }
-    .logo h1 { font-size: 20px; font-weight: 600; color: var(--text); letter-spacing: -0.3px; white-space: nowrap; }
+    .nav-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 20px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
-    .header-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .nav-logo .logo-emoji { font-size: 20px; }
 
+    .nav-tabs {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      flex: 1;
+      justify-content: center;
+    }
+
+    .nav-tab {
+      background: none;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap;
+    }
+    .nav-tab:hover { color: var(--text); background: var(--tab-active-bg); }
+    .nav-tab.active { background: var(--tab-active-bg); color: var(--tab-active-text); }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    #theme-toggle {
+      background: none;
+      border: none;
+      font-size: 18px;
+      font-family: Tossface;
+      cursor: pointer;
+      opacity: 0.6;
+      transition: opacity 0.15s;
+      padding: 4px;
+      line-height: 1;
+    }
+    #theme-toggle:hover { opacity: 1; }
 
     .logout-btn {
       background: none;
       border: 1px solid var(--btn-border);
       color: var(--btn-color);
-      padding: 7px 16px;
-      border-radius: 8px;
-      font-size: 13px;
+      padding: 5px 12px;
+      border-radius: 7px;
+      font-size: 12px;
       cursor: pointer;
       transition: color 0.2s, border-color 0.2s;
       white-space: nowrap;
     }
     .logout-btn:hover { color: var(--btn-hover-color); border-color: var(--btn-hover-border); }
 
+    /* ── Main layout ── */
+    .main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 32px 20px 48px;
+    }
+
+    /* ── Tab content ── */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* ── Section title ── */
     .section-title {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 500;
       color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 1px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
-    /* Summary */
+    /* ── Overview: Summary ── */
     .summary {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 16px;
       padding: 24px 28px;
-      margin-bottom: 32px;
+      margin-bottom: 28px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
       flex-wrap: wrap;
     }
-
     .summary-main { flex: 1; min-width: 160px; }
     .summary-label { font-size: 13px; color: var(--text-muted); margin-bottom: 6px; }
     .summary-value { font-size: 36px; font-weight: 700; color: var(--text); letter-spacing: -1px; }
     .summary-sub { font-size: 13px; color: var(--text-dim); margin-top: 4px; }
-
     .summary-stats { display: flex; gap: 32px; flex-wrap: wrap; }
     .stat-item { text-align: right; }
     .stat-label { font-size: 11px; color: var(--text-dim); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
     .stat-value { font-size: 18px; font-weight: 600; color: var(--text-sub); }
 
-    /* Updated at */
-    /* Bar chart */
+    /* ── Overview: Bar chart ── */
     .bar-section {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 16px;
       padding: 24px 28px;
-      margin-bottom: 32px;
+      margin-bottom: 28px;
     }
-
     .bar-row {
       display: grid;
       grid-template-columns: 90px 1fr 100px;
@@ -158,18 +229,16 @@
     }
     .bar-row:last-child { margin-bottom: 0; }
     .bar-label { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: var(--text-sub); }
-    .bar-label .tossface { }
     .bar-track { height: 10px; background: var(--bar-track); border-radius: 99px; overflow: hidden; }
     .bar-fill { height: 100%; border-radius: 99px; transition: width 0.8s cubic-bezier(0.4,0,0.2,1); }
     .bar-count { font-size: 13px; color: var(--text-muted); text-align: right; font-variant-numeric: tabular-nums; }
 
-    /* Agent cards */
+    /* ── Overview: Agent cards ── */
     .cards {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 16px;
     }
-
     .agent-card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -178,7 +247,6 @@
       transition: border-color 0.2s;
     }
     .agent-card:hover { border-color: var(--border-hover); }
-
     .agent-header {
       display: flex;
       align-items: flex-start;
@@ -187,28 +255,11 @@
       gap: 8px;
       min-width: 0;
     }
-
-    .agent-identity {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 0;
-      flex: 1;
-    }
-
+    .agent-identity { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1; }
     .agent-emoji { font-size: 22px; flex-shrink: 0; }
-
     .agent-info { min-width: 0; flex: 1; }
     .agent-name { font-size: 15px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .agent-role {
-      font-size: 11px;
-      color: var(--text-dim);
-      margin-top: 2px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
+    .agent-role { font-size: 11px; color: var(--text-dim); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .model-badge {
       background: var(--badge-bg);
       color: var(--badge-text);
@@ -220,13 +271,9 @@
       flex-shrink: 0;
       margin-top: 2px;
     }
-
-    /* Token row */
     .token-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
     .token-block-label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
     .token-block-value { font-size: 20px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
-
-    /* Context bar */
     .ctx-label {
       display: flex;
       justify-content: space-between;
@@ -240,16 +287,251 @@
     .ctx-tokens { font-size: 11px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
     .ctx-pct { font-weight: 700; flex-shrink: 0; }
     .ctx-pct.over { color: #f87171; }
-
     .ctx-track { height: 4px; background: var(--bar-track); border-radius: 99px; overflow: hidden; margin-bottom: 14px; }
     .ctx-fill { height: 100%; border-radius: 99px; max-width: 100%; transition: width 0.8s cubic-bezier(0.4,0,0.2,1); }
     .ctx-fill.over { background: #f87171 !important; }
-
-    /* Last activity */
     .last-activity { font-size: 11px; color: var(--text-dim); }
     .last-activity-time { color: var(--text-muted); }
 
-    /* Skeleton */
+    /* ── Activity tab ── */
+    .activity-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .activity-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px;
+    }
+    .activity-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .status-dot.active { background: #4ade80; box-shadow: 0 0 6px #4ade8088; }
+    .status-dot.idle { background: var(--text-faint); }
+    .activity-name { font-size: 15px; font-weight: 600; color: var(--text); }
+    .activity-status { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+    .activity-stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-top: 1px solid var(--border);
+      font-size: 13px;
+    }
+    .activity-stat-label { color: var(--text-muted); }
+    .activity-stat-value { color: var(--text); font-weight: 500; font-variant-numeric: tabular-nums; }
+
+    /* ── Kanban tab ── */
+    .kanban-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      gap: 12px;
+    }
+    .kanban-add-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .kanban-add-btn:hover { color: var(--text); border-color: var(--border-hover); }
+
+    .kanban-board {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .kanban-col {
+      background: var(--kanban-col-bg);
+      border-radius: 14px;
+      padding: 16px;
+      min-height: 200px;
+    }
+    .kanban-col-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .kanban-col-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+    .kanban-col-count {
+      font-size: 11px;
+      color: var(--text-dim);
+      background: var(--badge-bg);
+      padding: 2px 7px;
+      border-radius: 99px;
+    }
+
+    .kanban-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 10px;
+      transition: border-color 0.15s;
+    }
+    .kanban-card:hover { border-color: var(--border-hover); }
+    .kanban-card:last-child { margin-bottom: 0; }
+
+    .kanban-card-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 10px;
+      line-height: 1.4;
+      word-break: break-word;
+    }
+    .kanban-card-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .priority-badge {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 99px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .priority-high { background: #fef2f2; color: #ef4444; }
+    .priority-medium { background: #fffbeb; color: #f59e0b; }
+    .priority-low { background: #f0fdf4; color: #22c55e; }
+    [data-theme="dark"] .priority-high { background: #2d1515; color: #f87171; }
+    [data-theme="dark"] .priority-medium { background: #2d2210; color: #fbbf24; }
+    [data-theme="dark"] .priority-low { background: #0f2d1a; color: #4ade80; }
+
+    .agent-tag {
+      font-size: 10px;
+      color: var(--text-dim);
+      background: var(--badge-bg);
+      padding: 2px 7px;
+      border-radius: 99px;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .kanban-card-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      justify-content: flex-end;
+    }
+    .card-action-btn {
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-size: 12px;
+      cursor: pointer;
+      padding: 3px 6px;
+      border-radius: 5px;
+      transition: color 0.15s, background 0.15s;
+    }
+    .card-action-btn:hover { color: var(--text); background: var(--tab-active-bg); }
+    .card-action-btn.delete:hover { color: #f87171; }
+
+    .kanban-empty {
+      text-align: center;
+      color: var(--text-faint);
+      font-size: 13px;
+      padding: 24px 0;
+    }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      width: 100%;
+      max-width: 400px;
+    }
+    .modal-title { font-size: 17px; font-weight: 600; color: var(--text); margin-bottom: 20px; }
+    .form-group { margin-bottom: 16px; }
+    .form-label { display: block; font-size: 11px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 7px; }
+    .form-input, .form-select {
+      width: 100%;
+      padding: 10px 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+      font-family: inherit;
+    }
+    .form-input:focus, .form-select:focus { border-color: var(--btn-hover-border); }
+    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+    .btn-cancel {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .btn-cancel:hover { color: var(--text); border-color: var(--border-hover); }
+    .btn-primary {
+      background: var(--text);
+      color: var(--bg);
+      border: none;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .btn-primary:hover { opacity: 0.85; }
+
+    /* ── Skeleton ── */
     .skeleton {
       background: var(--skeleton);
       border-radius: 6px;
@@ -257,112 +539,186 @@
     }
     @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-    .bottom-actions {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 16px;
-      margin-top: 48px;
-    }
-
-    #theme-toggle {
-      background: none;
-      border: none;
-      padding: 4px;
-      font-size: 24px;
-      font-family: Tossface;
-      cursor: pointer;
-      opacity: 0.7;
-      transition: opacity 0.15s;
-      line-height: 1;
-    }
-    #theme-toggle:hover { opacity: 1; }
-
+    /* ── Footer ── */
     footer {
-      margin-top: 16px;
+      margin-top: 48px;
       text-align: center;
       font-size: 12px;
       color: var(--text-faint);
     }
 
-
-
-    @media (max-width: 600px) {
-      body { padding: 24px 20px; }
-      header { margin-bottom: 28px; }
-      .logo h1 { font-size: 18px; }
+    /* ── Mobile ── */
+    @media (max-width: 640px) {
+      .nav-inner { padding: 0 16px; height: 48px; }
+      .nav-logo span:last-child { display: none; }
+      .nav-tab { padding: 5px 10px; font-size: 13px; }
+      .main { padding: 20px 16px 48px; }
       .summary { flex-direction: column; gap: 20px; }
       .summary-stats { gap: 20px; }
       .stat-item { text-align: left; }
+      .summary-value { font-size: 28px; }
       .bar-row { grid-template-columns: 70px 1fr 80px; gap: 10px; }
       .cards { grid-template-columns: 1fr; }
-      .summary-value { font-size: 28px; }
+      .activity-grid { grid-template-columns: 1fr; }
+      .kanban-board { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <div class="logo">
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <div class="nav-logo">
         <span class="logo-emoji tossface">🐾</span>
-        <h1>OpenClaw Dashboard</h1>
+        <span>OpenClaw</span>
       </div>
-    </header>
-
-    <p class="section-title">전체 요약</p>
-    <div class="summary" id="summary">
-      <div class="summary-main">
-        <p class="summary-label">총 토큰 사용량</p>
-        <p class="summary-value" id="total-used">—</p>
-        <p class="summary-sub">에이전트 3명 합산</p>
+      <div class="nav-tabs">
+        <button class="nav-tab active" data-tab="overview">개요</button>
+        <button class="nav-tab" data-tab="activity">활성 시간</button>
+        <button class="nav-tab" data-tab="kanban">칸반</button>
       </div>
-      <div class="summary-stats">
-        <div class="stat-item">
-          <p class="stat-label">Input</p>
-          <p class="stat-value" id="total-input">—</p>
-        </div>
-        <div class="stat-item">
-          <p class="stat-label">Output</p>
-          <p class="stat-value" id="total-output">—</p>
-        </div>
+      <div class="nav-actions">
+        <button id="theme-toggle" title="테마 전환">🌙</button>
+        <button class="logout-btn" id="logout-btn">로그아웃</button>
       </div>
     </div>
+  </nav>
 
-    <p class="section-title">에이전트별 비교</p>
-    <div class="bar-section" id="bar-section">
-      <div style="height:100px" class="skeleton"></div>
-    </div>
+  <!-- Main -->
+  <main class="main">
 
-    <p class="section-title">에이전트 상세</p>
-    <div class="cards" id="cards">
-      {[1,2,3].map(() => (
-        <div class="agent-card">
-          <div style="height:160px" class="skeleton"></div>
+    <!-- 개요 탭 -->
+    <section id="tab-overview" class="tab-content active">
+      <p class="section-title">전체 요약</p>
+      <div class="summary" id="summary">
+        <div class="summary-main">
+          <p class="summary-label">총 토큰 사용량</p>
+          <p class="summary-value" id="total-used">—</p>
+          <p class="summary-sub" id="agent-count-label">에이전트 로딩 중...</p>
         </div>
-      ))}
-    </div>
+        <div class="summary-stats">
+          <div class="stat-item">
+            <p class="stat-label">Input</p>
+            <p class="stat-value" id="total-input">—</p>
+          </div>
+          <div class="stat-item">
+            <p class="stat-label">Output</p>
+            <p class="stat-value" id="total-output">—</p>
+          </div>
+        </div>
+      </div>
 
-    <div class="bottom-actions">
-      <button class="icon-btn" id="theme-toggle" title="테마 전환">🌙</button>
-      <button class="logout-btn" id="logout-btn">로그아웃</button>
-    </div>
+      <p class="section-title">에이전트별 비교</p>
+      <div class="bar-section" id="bar-section">
+        <div style="height:100px" class="skeleton"></div>
+      </div>
 
-    <footer>OpenClaw · 최근 갱신: <span id="data-updated">로딩 중...</span></footer>
+      <p class="section-title">에이전트 상세</p>
+      <div class="cards" id="cards">
+        {[1,2,3].map(() => (
+          <div class="agent-card">
+            <div style="height:160px" class="skeleton"></div>
+          </div>
+        ))}
+      </div>
+
+      <footer>OpenClaw · 최근 갱신: <span id="data-updated">로딩 중...</span></footer>
+    </section>
+
+    <!-- 활성 시간 탭 -->
+    <section id="tab-activity" class="tab-content">
+      <p class="section-title">에이전트 활동 현황</p>
+      <div class="activity-grid" id="activity-grid">
+        <div class="agent-card"><div style="height:160px" class="skeleton"></div></div>
+        <div class="agent-card"><div style="height:160px" class="skeleton"></div></div>
+        <div class="agent-card"><div style="height:160px" class="skeleton"></div></div>
+      </div>
+      <footer>OpenClaw · 최근 갱신: <span id="data-updated-2">로딩 중...</span></footer>
+    </section>
+
+    <!-- 칸반 탭 -->
+    <section id="tab-kanban" class="tab-content">
+      <div class="kanban-toolbar">
+        <p class="section-title" style="margin:0">작업 보드</p>
+        <button class="kanban-add-btn" id="kanban-add-btn">
+          <span>+</span> 태스크 추가
+        </button>
+      </div>
+      <div class="kanban-board">
+        <div class="kanban-col">
+          <div class="kanban-col-header">
+            <span class="kanban-col-title">할 일</span>
+            <span class="kanban-col-count" id="count-todo">0</span>
+          </div>
+          <div id="col-todo"></div>
+        </div>
+        <div class="kanban-col">
+          <div class="kanban-col-header">
+            <span class="kanban-col-title">진행 중</span>
+            <span class="kanban-col-count" id="count-doing">0</span>
+          </div>
+          <div id="col-doing"></div>
+        </div>
+        <div class="kanban-col">
+          <div class="kanban-col-header">
+            <span class="kanban-col-title">완료</span>
+            <span class="kanban-col-count" id="count-done">0</span>
+          </div>
+          <div id="col-done"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 태스크 추가 모달 -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal">
+      <p class="modal-title">태스크 추가</p>
+      <div class="form-group">
+        <label class="form-label" for="task-title">제목</label>
+        <input class="form-input" id="task-title" type="text" placeholder="태스크 내용을 입력하세요" />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="task-agent">에이전트</label>
+        <select class="form-select" id="task-agent">
+          <option value="">없음</option>
+          <option value="gary">🐍 개리 (Gary)</option>
+          <option value="judy">🐰 주디 (Judy)</option>
+          <option value="nick">🦊 닉 (Nick)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="task-priority">우선순위</label>
+        <select class="form-select" id="task-priority">
+          <option value="medium">보통</option>
+          <option value="high">높음</option>
+          <option value="low">낮음</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="task-col">초기 상태</label>
+        <select class="form-select" id="task-col">
+          <option value="todo">할 일</option>
+          <option value="doing">진행 중</option>
+          <option value="done">완료</option>
+        </select>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel" id="modal-cancel">취소</button>
+        <button class="btn-primary" id="modal-save">추가</button>
+      </div>
+    </div>
   </div>
 
   <script>
-    // Auth guard
+    // ── Auth guard ──
     if (sessionStorage.getItem('oc_auth') !== '1') {
       window.location.replace('/');
     }
 
-    // Logout
-    document.getElementById('logout-btn').addEventListener('click', () => {
-      sessionStorage.removeItem('oc_auth');
-      window.location.replace('/');
-    });
-
-    // Theme — follows system, manual toggle overrides temporarily
+    // ── Theme ──
     const themeBtn = document.getElementById('theme-toggle');
     const sysDark = window.matchMedia('(prefers-color-scheme: dark)');
 
@@ -371,23 +727,38 @@
       themeBtn.textContent = theme === 'dark' ? '🌙' : '☀️';
       if (manual) localStorage.setItem('oc_theme', theme);
     }
-
-    // Init: localStorage override or system default
     applyTheme(localStorage.getItem('oc_theme') || (sysDark.matches ? 'dark' : 'light'));
-
-    // Follow system changes (only if no manual override)
     sysDark.addEventListener('change', e => {
-      if (!localStorage.getItem('oc_theme')) {
-        applyTheme(e.matches ? 'dark' : 'light');
-      }
+      if (!localStorage.getItem('oc_theme')) applyTheme(e.matches ? 'dark' : 'light');
     });
-
     themeBtn.addEventListener('click', () => {
-      const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-      applyTheme(next, true);
+      applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark', true);
     });
 
-    // Utilities
+    // ── Logout ──
+    document.getElementById('logout-btn').addEventListener('click', () => {
+      sessionStorage.removeItem('oc_auth');
+      window.location.replace('/');
+    });
+
+    // ── Tab navigation ──
+    const tabs = document.querySelectorAll('.nav-tab');
+    const contents = document.querySelectorAll('.tab-content');
+    const COLS = ['todo', 'doing', 'done'];
+
+    function switchTab(tabName) {
+      tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === tabName));
+      contents.forEach(c => c.classList.toggle('active', c.id === 'tab-' + tabName));
+      location.hash = tabName === 'overview' ? '' : tabName;
+    }
+
+    tabs.forEach(t => t.addEventListener('click', () => switchTab(t.dataset.tab)));
+
+    // Restore tab from hash
+    const hash = location.hash.replace('#', '');
+    if (['activity', 'kanban'].includes(hash)) switchTab(hash);
+
+    // ── Utilities ──
     function fmt(n) { return (n || 0).toLocaleString('ko-KR'); }
     function relTime(ms) {
       if (!ms) return '알 수 없음';
@@ -400,9 +771,12 @@
       if (hr < 24) return `${hr}시간 전`;
       return `${Math.floor(hr / 24)}일 전`;
     }
+    function isActive(ms) {
+      return ms && (Date.now() - ms) < 60 * 60 * 1000; // 1시간 이내
+    }
 
-    // Render
-    function render(data) {
+    // ── Overview render ──
+    function renderOverview(data) {
       const agents = data.agents || [];
       const totalInput = agents.reduce((s, a) => s + (a.inputTokens || 0), 0);
       const totalOutput = agents.reduce((s, a) => s + (a.outputTokens || 0), 0);
@@ -411,79 +785,207 @@
       document.getElementById('total-used').textContent = fmt(totalUsed);
       document.getElementById('total-input').textContent = fmt(totalInput);
       document.getElementById('total-output').textContent = fmt(totalOutput);
-      document.getElementById('data-updated').textContent = data.updatedAt
+      document.getElementById('agent-count-label').textContent = `에이전트 ${agents.length}명 합산`;
+      const updatedText = data.updatedAt
         ? new Date(data.updatedAt).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })
         : '알 수 없음';
+      document.getElementById('data-updated').textContent = updatedText;
+      document.getElementById('data-updated-2').textContent = updatedText;
 
       // Bar chart
-      const barHtml = agents.map(a => {
+      document.getElementById('bar-section').innerHTML = agents.map(a => {
         const used = (a.inputTokens || 0) + (a.outputTokens || 0);
         const pct = totalUsed > 0 ? ((used / totalUsed) * 100).toFixed(1) : '0';
-        return `
-          <div class="bar-row">
-            <span class="bar-label"><span class="tossface">${a.emoji}</span><span>${a.name}</span></span>
-            <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${a.color}"></div></div>
-            <span class="bar-count">${fmt(used)}</span>
-          </div>`;
+        return `<div class="bar-row">
+          <span class="bar-label"><span class="tossface">${a.emoji}</span><span>${a.name}</span></span>
+          <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${a.color}"></div></div>
+          <span class="bar-count">${fmt(used)}</span>
+        </div>`;
       }).join('');
-      document.getElementById('bar-section').innerHTML = barHtml;
 
-      // Cards
-      const cardsHtml = agents.map(a => {
+      // Agent cards
+      document.getElementById('cards').innerHTML = agents.map(a => {
         const ctxRatio = a.contextTokens > 0 ? (a.totalTokens / a.contextTokens) * 100 : 0;
         const ctxBarWidth = Math.min(100, ctxRatio);
         const isOver = ctxRatio > 100;
         const modelShort = (a.model || '').split('/').pop() || a.model;
-        return `
-          <div class="agent-card">
-            <div class="agent-header">
-              <div class="agent-identity">
-                <span class="agent-emoji tossface">${a.emoji}</span>
-                <div class="agent-info">
-                  <p class="agent-name">${a.name} (${a.englishName})</p>
-                  <p class="agent-role">${a.role}</p>
-                </div>
-              </div>
-              <span class="model-badge">${modelShort}</span>
-            </div>
-            <div class="token-row">
-              <div class="token-block">
-                <p class="token-block-label">Input</p>
-                <p class="token-block-value">${fmt(a.inputTokens)}</p>
-              </div>
-              <div class="token-block">
-                <p class="token-block-label">Output</p>
-                <p class="token-block-value">${fmt(a.outputTokens)}</p>
+        return `<div class="agent-card">
+          <div class="agent-header">
+            <div class="agent-identity">
+              <span class="agent-emoji tossface">${a.emoji}</span>
+              <div class="agent-info">
+                <p class="agent-name">${a.name} (${a.englishName})</p>
+                <p class="agent-role">${a.role}</p>
               </div>
             </div>
-            <div class="ctx-label">
-              <span class="ctx-label-left">컨텍스트 사용량</span>
-              <span class="ctx-tokens">${fmt(a.totalTokens)} / ${fmt(a.contextTokens)}</span>
-              <span class="ctx-pct${isOver ? ' over' : ''}">${ctxRatio.toFixed(1)}%${isOver ? ' ↑' : ''}</span>
-            </div>
-            <div class="ctx-track">
-              <div class="ctx-fill${isOver ? ' over' : ''}" style="width:${ctxBarWidth}%;${isOver ? '' : `background:${a.color}`}"></div>
-            </div>
-            <p class="last-activity">마지막 활동: <span class="last-activity-time">${relTime(a.updatedAt)}</span></p>
-          </div>`;
+            <span class="model-badge">${modelShort}</span>
+          </div>
+          <div class="token-row">
+            <div><p class="token-block-label">Input</p><p class="token-block-value">${fmt(a.inputTokens)}</p></div>
+            <div><p class="token-block-label">Output</p><p class="token-block-value">${fmt(a.outputTokens)}</p></div>
+          </div>
+          <div class="ctx-label">
+            <span class="ctx-label-left">컨텍스트 사용량</span>
+            <span class="ctx-tokens">${fmt(a.totalTokens)} / ${fmt(a.contextTokens)}</span>
+            <span class="ctx-pct${isOver ? ' over' : ''}">${ctxRatio.toFixed(1)}%${isOver ? ' ↑' : ''}</span>
+          </div>
+          <div class="ctx-track">
+            <div class="ctx-fill${isOver ? ' over' : ''}" style="width:${ctxBarWidth}%;${isOver ? '' : `background:${a.color}`}"></div>
+          </div>
+          <p class="last-activity">마지막 활동: <span class="last-activity-time">${relTime(a.updatedAt)}</span></p>
+        </div>`;
       }).join('');
-      document.getElementById('cards').innerHTML = cardsHtml;
     }
 
-    // Fetch data
+    // ── Activity render ──
+    function renderActivity(data) {
+      const agents = data.agents || [];
+      const AGENT_META = { gary: '기술 검토', judy: '기능 구현', nick: '일정 관리' };
+
+      document.getElementById('activity-grid').innerHTML = agents.map(a => {
+        const active = isActive(a.updatedAt);
+        const totalTokens = (a.inputTokens || 0) + (a.outputTokens || 0);
+        const ctxPct = a.contextTokens > 0 ? ((a.totalTokens / a.contextTokens) * 100).toFixed(1) : '0';
+        return `<div class="activity-card">
+          <div class="activity-header">
+            <div class="status-dot ${active ? 'active' : 'idle'}"></div>
+            <div>
+              <p class="activity-name"><span class="tossface">${a.emoji}</span> ${a.name}</p>
+              <p class="activity-status">${active ? '활성' : '유휴'} · ${a.role}</p>
+            </div>
+          </div>
+          <div class="activity-stat-row">
+            <span class="activity-stat-label">마지막 활동</span>
+            <span class="activity-stat-value">${relTime(a.updatedAt)}</span>
+          </div>
+          <div class="activity-stat-row">
+            <span class="activity-stat-label">총 토큰</span>
+            <span class="activity-stat-value">${fmt(totalTokens)}</span>
+          </div>
+          <div class="activity-stat-row">
+            <span class="activity-stat-label">컨텍스트</span>
+            <span class="activity-stat-value">${ctxPct}%</span>
+          </div>
+          <div class="activity-stat-row">
+            <span class="activity-stat-label">모델</span>
+            <span class="activity-stat-value" style="font-size:11px">${(a.model || '').split('/').pop()}</span>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    // ── Data fetch ──
     async function loadData() {
       try {
         const res = await fetch('/data/tokens.json?t=' + Date.now());
         if (!res.ok) throw new Error(res.status);
         const data = await res.json();
-        render(data);
+        renderOverview(data);
+        renderActivity(data);
       } catch (e) {
         console.error('Failed to load tokens:', e);
       }
     }
-
     setInterval(loadData, 5 * 60 * 1000);
     loadData();
+
+    // ── Kanban ──
+    const AGENT_EMOJIS = { gary: '🐍', judy: '🐰', nick: '🦊' };
+    const AGENT_NAMES  = { gary: '개리', judy: '주디', nick: '닉' };
+    const PRIORITY_LABELS = { high: '높음', medium: '보통', low: '낮음' };
+
+    function loadKanban() {
+      try {
+        return JSON.parse(localStorage.getItem('oc_kanban') || '{"todo":[],"doing":[],"done":[]}');
+      } catch { return { todo: [], doing: [], done: [] }; }
+    }
+    function saveKanban(data) {
+      localStorage.setItem('oc_kanban', JSON.stringify(data));
+    }
+
+    function renderKanban() {
+      const data = loadKanban();
+      COLS.forEach((col, colIdx) => {
+        const tasks = data[col] || [];
+        document.getElementById(`count-${col}`).textContent = tasks.length;
+        document.getElementById(`col-${col}`).innerHTML = tasks.length === 0
+          ? `<p class="kanban-empty">태스크 없음</p>`
+          : tasks.map((task, i) => {
+              const canLeft  = colIdx > 0;
+              const canRight = colIdx < 2;
+              const agentTag = task.agent
+                ? `<span class="agent-tag tossface">${AGENT_EMOJIS[task.agent]} ${AGENT_NAMES[task.agent]}</span>`
+                : '';
+              return `<div class="kanban-card">
+                <p class="kanban-card-title">${escHtml(task.title)}</p>
+                <div class="kanban-card-meta">
+                  <span class="priority-badge priority-${task.priority}">${PRIORITY_LABELS[task.priority]}</span>
+                  ${agentTag}
+                </div>
+                <div class="kanban-card-actions">
+                  ${canLeft  ? `<button class="card-action-btn" onclick="moveTask('${col}',${i},'${COLS[colIdx-1]}')">←</button>` : ''}
+                  ${canRight ? `<button class="card-action-btn" onclick="moveTask('${col}',${i},'${COLS[colIdx+1]}')">→</button>` : ''}
+                  <button class="card-action-btn delete" onclick="deleteTask('${col}',${i})">✕</button>
+                </div>
+              </div>`;
+            }).join('');
+      });
+    }
+
+    function escHtml(str) {
+      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    window.moveTask = function(fromCol, idx, toCol) {
+      const data = loadKanban();
+      const [task] = data[fromCol].splice(idx, 1);
+      data[toCol].push(task);
+      saveKanban(data);
+      renderKanban();
+    };
+
+    window.deleteTask = function(col, idx) {
+      const data = loadKanban();
+      data[col].splice(idx, 1);
+      saveKanban(data);
+      renderKanban();
+    };
+
+    // Modal
+    const modal = document.getElementById('modal');
+    document.getElementById('kanban-add-btn').addEventListener('click', () => {
+      document.getElementById('task-title').value = '';
+      document.getElementById('task-agent').value = '';
+      document.getElementById('task-priority').value = 'medium';
+      document.getElementById('task-col').value = 'todo';
+      modal.classList.add('open');
+      document.getElementById('task-title').focus();
+    });
+    document.getElementById('modal-cancel').addEventListener('click', () => modal.classList.remove('open'));
+    modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('open'); });
+
+    document.getElementById('modal-save').addEventListener('click', () => {
+      const title = document.getElementById('task-title').value.trim();
+      if (!title) { document.getElementById('task-title').focus(); return; }
+      const data = loadKanban();
+      const col = document.getElementById('task-col').value;
+      data[col].push({
+        id: Date.now(),
+        title,
+        agent: document.getElementById('task-agent').value || null,
+        priority: document.getElementById('task-priority').value,
+        createdAt: Date.now()
+      });
+      saveKanban(data);
+      renderKanban();
+      modal.classList.remove('open');
+    });
+
+    document.getElementById('task-title').addEventListener('keydown', e => {
+      if (e.key === 'Enter') document.getElementById('modal-save').click();
+    });
+
+    renderKanban();
   </script>
 </body>
 </html>
