@@ -62,13 +62,21 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      align-items: center;
       justify-content: center;
-      gap: 16px;
       background: var(--bg);
       font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       transition: background 0.2s;
-      padding: 24px 16px;
+      padding: 24px 16px 72px;
+    }
+
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
     }
 
     .theme-toggle {
@@ -91,6 +99,7 @@
       padding: 48px 40px;
       width: 100%;
       max-width: 380px;
+      margin: 0 auto;
       box-shadow: 0 24px 64px var(--shadow);
       transition: background 0.2s, border-color 0.2s;
     }
@@ -195,7 +204,9 @@
     <button class="submit" id="submit-btn">입장하기</button>
   </div>
 
-  <button class="theme-toggle" id="theme-toggle" title="테마 전환">🌙</button>
+  <footer>
+    <button class="theme-toggle" id="theme-toggle" title="테마 전환">🌙</button>
+  </footer>
 
   <script>
     const HASH = 'c3d4c44e848a92a8ffd0d8cdd78dd95c796104c8005346aff46f8c7376671cf4';
