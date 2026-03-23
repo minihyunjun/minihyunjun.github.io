@@ -24,7 +24,7 @@ python scripts/generate-tokens.py
 `~/.openclaw/agents/*/sessions/` 데이터를 읽어 `public/data/tokens.json`을 생성한다.
 생성 후 커밋하면 배포 시 반영된다.
 
-## 📋 칸반 데이터
+
 
 `public/data/kanban.json`을 직접 편집하거나 대시보드 UI에서 관리.
 
