@@ -1,0 +1,28 @@
+name: Update Token Data
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/5 * * * *'
+
+jobs:
+  update:
+    # Requires a self-hosted runner on the local machine where ~/.openclaw exists.
+    # Register with: gh runner add --name local-mac --labels self-hosted,mac
+    runs-on: [self-hosted, mac]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate tokens.json
+        run: python3 scripts/generate-tokens.py
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "openclaw-bot"
+          git config user.email "bot@openclaw.local"
+          git add src/data/tokens.json
+          git diff --cached --quiet && echo "No changes" || (
+            git commit -m "chore: update token data [skip ci]" &&
+            git push
+          )
