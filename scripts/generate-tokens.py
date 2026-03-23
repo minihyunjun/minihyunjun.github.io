@@ -8,6 +8,7 @@ import json
 import os
 import time
 from pathlib import Path
+from datetime import datetime
 
 AGENTS = [
     {
@@ -78,6 +79,30 @@ def load_agent(agent):
         if ua and (first_seen_at == 0 or ua < first_seen_at):
             first_seen_at = ua
 
+    # 실제 작업 시간: jsonl 메시지 타임스탬프 기반 (30분 이상 공백 = 휴식)
+    active_ms = 0
+    sessions_dir = BASE / agent["agentId"] / "sessions"
+    timestamps = []
+    for jsonl_file in sessions_dir.glob("*.jsonl"):
+        for line in jsonl_file.read_text(encoding="utf-8").splitlines():
+            if not line.strip():
+                continue
+            try:
+                entry = json.loads(line)
+                ts = entry.get("timestamp")
+                if ts:
+                    dt = datetime.fromisoformat(ts.replace("Z", "+00:00"))
+                    timestamps.append(dt.timestamp() * 1000)
+            except Exception:
+                pass
+    if timestamps:
+        timestamps.sort()
+        BREAK_THRESHOLD_MS = 30 * 60 * 1000  # 30분
+        for i in range(1, len(timestamps)):
+            gap = timestamps[i] - timestamps[i - 1]
+            if gap < BREAK_THRESHOLD_MS:
+                active_ms += gap
+
     return {
         **agent,
         "inputTokens": input_tokens,
@@ -87,6 +112,7 @@ def load_agent(agent):
         "updatedAt": updated_at,
         "firstSeenAt": first_seen_at,
         "sessionCount": session_count,
+        "activeMs": int(active_ms),
     }
 
 

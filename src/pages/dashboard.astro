@@ -511,12 +511,12 @@
     .chip:hover { border-color: var(--border-hover); color: var(--text); }
     .chip.selected { background: var(--text); color: var(--bg); border-color: var(--text); }
 
-    .chip.priority-high.selected   { background: #fef2f2; border-color: #ef4444; color: #ef4444; }
-    .chip.priority-medium.selected { background: #fffbeb; border-color: #f59e0b; color: #b45309; }
-    .chip.priority-low.selected    { background: #f0fdf4; border-color: #22c55e; color: #15803d; }
-    [data-theme="dark"] .chip.priority-high.selected   { background: #2d1515; border-color: #f87171; color: #f87171; }
-    [data-theme="dark"] .chip.priority-medium.selected { background: #2d2210; border-color: #fbbf24; color: #fbbf24; }
-    [data-theme="dark"] .chip.priority-low.selected    { background: #0f2d1a; border-color: #4ade80; color: #4ade80; }
+    .chip.priority-high.selected   { background: #fee2e2; border-color: #ef4444; color: #dc2626; }
+    .chip.priority-medium.selected { background: #fef3c7; border-color: #f59e0b; color: #b45309; }
+    .chip.priority-low.selected    { background: #dcfce7; border-color: #22c55e; color: #15803d; }
+    [data-theme="dark"] .chip.priority-high.selected   { background: #3d1a1a; border-color: #f87171; color: #f87171; }
+    [data-theme="dark"] .chip.priority-medium.selected { background: #3d2e10; border-color: #fbbf24; color: #fbbf24; }
+    [data-theme="dark"] .chip.priority-low.selected    { background: #0f3d20; border-color: #4ade80; color: #4ade80; }
 
     .chip-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
     .chip-dot.high   { background: #ef4444; }
@@ -780,13 +780,12 @@
     function isActive(ms) {
       return ms && (Date.now() - ms) < 60 * 60 * 1000;
     }
-    function activeDuration(firstMs, lastMs) {
-      if (!firstMs || !lastMs) return '—';
-      const ms = lastMs - firstMs;
+    function activeDuration(ms) {
+      if (!ms) return '—';
       const h = Math.floor(ms / 3600000);
-      const d = Math.floor(h / 24);
-      if (d >= 1) return `${d}일 ${h % 24}시간`;
-      return `${h}시간`;
+      const m = Math.floor((ms % 3600000) / 60000);
+      if (h >= 1) return `${h}시간 ${m}분`;
+      return `${m}분`;
     }
 
     // ── Overview render ──
@@ -850,7 +849,7 @@
           </div>
           <div class="card-stats-row">
             <p class="card-stat">마지막 활동 <span>${relTime(a.updatedAt)}</span></p>
-            <p class="card-stat">총 활동 <span>${activeDuration(a.firstSeenAt, a.updatedAt)}</span></p>
+            <p class="card-stat">총 활동 <span>${activeDuration(a.activeMs)}</span></p>
             <p class="card-stat">세션 <span>${a.sessionCount || '—'}회</span></p>
           </div>
         </div>`;
