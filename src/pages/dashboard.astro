@@ -22,7 +22,7 @@
 
     [data-theme="dark"] {
       --bg: #0d0d0d;
-      --nav-bg: rgba(13,13,13,0.85);
+      --nav-bg: rgba(10,10,10,0.45);
       --surface: #161616;
       --border: #2a2a2a;
       --border-hover: #3a3a3a;
@@ -47,7 +47,7 @@
 
     [data-theme="light"] {
       --bg: #f5f5f5;
-      --nav-bg: rgba(245,245,245,0.85);
+      --nav-bg: rgba(255,255,255,0.45);
       --surface: #ffffff;
       --border: #e0e0e0;
       --border-hover: #c0c0c0;
@@ -86,8 +86,8 @@
       top: 0;
       z-index: 100;
       background: var(--nav-bg);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(40px) saturate(180%);
+      -webkit-backdrop-filter: blur(40px) saturate(180%);
       border-bottom: 1px solid var(--border);
     }
 
@@ -894,17 +894,21 @@
     const AGENT_NAMES  = { gary: '개리', judy: '주디', nick: '닉' };
     const PRIORITY_LABELS = { high: '높음', medium: '보통', low: '낮음' };
 
-    function loadKanban() {
+    let kanbanData = { todo: [], doing: [], done: [] };
+
+    async function loadKanban() {
       try {
-        return JSON.parse(localStorage.getItem('oc_kanban') || '{"todo":[],"doing":[],"done":[]}');
-      } catch { return { todo: [], doing: [], done: [] }; }
-    }
-    function saveKanban(data) {
-      localStorage.setItem('oc_kanban', JSON.stringify(data));
+        const res = await fetch('/data/kanban.json?t=' + Date.now());
+        if (!res.ok) throw new Error(res.status);
+        kanbanData = await res.json();
+      } catch (e) {
+        console.error('Failed to load kanban:', e);
+      }
+      renderKanban();
     }
 
     function renderKanban() {
-      const data = loadKanban();
+      const data = kanbanData;
       COLS.forEach((col, colIdx) => {
         const tasks = data[col] || [];
         document.getElementById(`count-${col}`).textContent = tasks.length;
@@ -937,17 +941,13 @@
     }
 
     window.moveTask = function(fromCol, idx, toCol) {
-      const data = loadKanban();
-      const [task] = data[fromCol].splice(idx, 1);
-      data[toCol].push(task);
-      saveKanban(data);
+      const [task] = kanbanData[fromCol].splice(idx, 1);
+      kanbanData[toCol].push(task);
       renderKanban();
     };
 
     window.deleteTask = function(col, idx) {
-      const data = loadKanban();
-      data[col].splice(idx, 1);
-      saveKanban(data);
+      kanbanData[col].splice(idx, 1);
       renderKanban();
     };
 
@@ -967,16 +967,14 @@
     document.getElementById('modal-save').addEventListener('click', () => {
       const title = document.getElementById('task-title').value.trim();
       if (!title) { document.getElementById('task-title').focus(); return; }
-      const data = loadKanban();
       const col = document.getElementById('task-col').value;
-      data[col].push({
+      kanbanData[col].push({
         id: Date.now(),
         title,
         agent: document.getElementById('task-agent').value || null,
         priority: document.getElementById('task-priority').value,
         createdAt: Date.now()
       });
-      saveKanban(data);
       renderKanban();
       modal.classList.remove('open');
     });
@@ -985,7 +983,7 @@
       if (e.key === 'Enter') document.getElementById('modal-save').click();
     });
 
-    renderKanban();
+    loadKanban();
   </script>
 </body>
 </html>
