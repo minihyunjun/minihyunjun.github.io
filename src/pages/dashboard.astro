@@ -301,8 +301,15 @@
       border-radius: 50%;
       flex-shrink: 0;
     }
-    .status-dot.active { background: #4ade80; box-shadow: 0 0 6px #4ade8088; }
+    .status-dot.active {
+      background: #4ade80;
+      animation: pulse-active 3s ease-in-out infinite;
+    }
     .status-dot.idle { background: var(--text-faint); }
+    @keyframes pulse-active {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(74,222,128,0.5); }
+      50%       { box-shadow: 0 0 0 5px rgba(74,222,128,0); }
+    }
 
     /* ── Kanban tab ── */
     .kanban-toolbar {
@@ -491,18 +498,26 @@
       font-weight: 500;
       cursor: pointer;
       transition: all 0.15s;
-      font-family: inherit;
+      font-family: 'Pretendard Variable', Pretendard, -apple-system, sans-serif;
       white-space: nowrap;
     }
     .chip:hover { border-color: var(--border-hover); color: var(--text); }
     .chip.selected { background: var(--text); color: var(--bg); border-color: var(--text); }
-    .chip.priority-high.selected  { background: #ef4444; border-color: #ef4444; color: #fff; }
-    .chip.priority-medium.selected { background: #f59e0b; border-color: #f59e0b; color: #fff; }
-    .chip.priority-low.selected   { background: #22c55e; border-color: #22c55e; color: #fff; }
+
+    .chip.priority-high.selected   { background: #fef2f2; border-color: #ef4444; color: #ef4444; }
+    .chip.priority-medium.selected { background: #fffbeb; border-color: #f59e0b; color: #b45309; }
+    .chip.priority-low.selected    { background: #f0fdf4; border-color: #22c55e; color: #15803d; }
+    [data-theme="dark"] .chip.priority-high.selected   { background: #2d1515; border-color: #f87171; color: #f87171; }
+    [data-theme="dark"] .chip.priority-medium.selected { background: #2d2210; border-color: #fbbf24; color: #fbbf24; }
+    [data-theme="dark"] .chip.priority-low.selected    { background: #0f2d1a; border-color: #4ade80; color: #4ade80; }
+
     .chip-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
     .chip-dot.high   { background: #ef4444; }
     .chip-dot.medium { background: #f59e0b; }
     .chip-dot.low    { background: #22c55e; }
+    .chip.priority-high.selected   .chip-dot.high   { background: #ef4444; width: 8px; height: 8px; }
+    .chip.priority-medium.selected .chip-dot.medium { background: #f59e0b; width: 8px; height: 8px; }
+    .chip.priority-low.selected    .chip-dot.low    { background: #22c55e; width: 8px; height: 8px; }
     .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
     .btn-cancel {
       background: none;
@@ -668,9 +683,9 @@
         <label class="form-label">에이전트</label>
         <div class="chip-group" id="task-agent">
           <button type="button" class="chip selected" data-value="">없음</button>
-          <button type="button" class="chip tossface" data-value="gary">🐍 개리</button>
-          <button type="button" class="chip tossface" data-value="judy">🐰 주디</button>
-          <button type="button" class="chip tossface" data-value="nick">🦊 닉</button>
+          <button type="button" class="chip" data-value="gary"><span class="tossface">🐍</span>개리</button>
+          <button type="button" class="chip" data-value="judy"><span class="tossface">🐰</span>주디</button>
+          <button type="button" class="chip" data-value="nick"><span class="tossface">🦊</span>닉</button>
         </div>
       </div>
       <div class="form-group">
