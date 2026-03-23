@@ -293,6 +293,13 @@
     .ctx-fill.over { background: #f87171 !important; }
     .last-activity { font-size: 11px; color: var(--text-dim); }
     .last-activity-time { color: var(--text-muted); }
+    .card-stats-row {
+      display: flex;
+      gap: 16px;
+      margin-top: 4px;
+    }
+    .card-stat { font-size: 11px; color: var(--text-dim); }
+    .card-stat span { color: var(--text-muted); }
 
     /* ── Status dot ── */
     .status-dot {
@@ -771,7 +778,15 @@
       return `${Math.floor(hr / 24)}일 전`;
     }
     function isActive(ms) {
-      return ms && (Date.now() - ms) < 60 * 60 * 1000; // 1시간 이내
+      return ms && (Date.now() - ms) < 60 * 60 * 1000;
+    }
+    function activeDuration(firstMs, lastMs) {
+      if (!firstMs || !lastMs) return '—';
+      const ms = lastMs - firstMs;
+      const h = Math.floor(ms / 3600000);
+      const d = Math.floor(h / 24);
+      if (d >= 1) return `${d}일 ${h % 24}시간`;
+      return `${h}시간`;
     }
 
     // ── Overview render ──
@@ -833,7 +848,11 @@
           <div class="ctx-track">
             <div class="ctx-fill${isOver ? ' over' : ''}" style="width:${ctxBarWidth}%;${isOver ? '' : `background:${a.color}`}"></div>
           </div>
-          <p class="last-activity">마지막 활동: <span class="last-activity-time">${relTime(a.updatedAt)}</span></p>
+          <div class="card-stats-row">
+            <p class="card-stat">마지막 활동 <span>${relTime(a.updatedAt)}</span></p>
+            <p class="card-stat">총 활동 <span>${activeDuration(a.firstSeenAt, a.updatedAt)}</span></p>
+            <p class="card-stat">세션 <span>${a.sessionCount || '—'}회</span></p>
+          </div>
         </div>`;
       }).join('');
     }

@@ -59,10 +59,13 @@ def load_agent(agent):
     total_tokens = 0
     context_tokens = 32768
     updated_at = 0
+    first_seen_at = 0
+    session_count = 0
 
     for key, session in data.items():
         if not key.startswith("agent:"):
             continue
+        session_count += 1
         input_tokens += session.get("inputTokens") or 0
         output_tokens += session.get("outputTokens") or 0
         tt = session.get("totalTokens") or 0
@@ -72,6 +75,8 @@ def load_agent(agent):
             updated_at = ua
             total_tokens = tt
             context_tokens = ct
+        if ua and (first_seen_at == 0 or ua < first_seen_at):
+            first_seen_at = ua
 
     return {
         **agent,
@@ -80,6 +85,8 @@ def load_agent(agent):
         "totalTokens": total_tokens,
         "contextTokens": context_tokens,
         "updatedAt": updated_at,
+        "firstSeenAt": first_seen_at,
+        "sessionCount": session_count,
     }
 
 
