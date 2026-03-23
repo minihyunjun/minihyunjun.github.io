@@ -584,6 +584,29 @@
     }
     .btn-primary:hover { opacity: 0.85; }
 
+    /* ── Agents tab ── */
+    .agent-panels { display: flex; flex-direction: column; gap: 20px; }
+    .agent-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 22px; }
+    .agent-panel-header { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+    .pixel-canvas { image-rendering: pixelated; flex-shrink: 0; }
+    .agent-panel-info { flex: 1; min-width: 0; }
+    .agent-panel-name { font-size: 15px; font-weight: 700; color: var(--text); }
+    .agent-panel-role { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+    .agent-task-list { display: flex; flex-direction: column; gap: 8px; }
+    .agent-task-item {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 10px 12px;
+      background: var(--kanban-col-bg);
+      border: 1px solid var(--border); border-radius: 8px;
+    }
+    .agent-task-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 3px; }
+    .agent-task-dot.todo  { background: var(--text-faint); }
+    .agent-task-dot.doing { background: #fbbf24; animation: pulse-active 2s ease-in-out infinite; }
+    .agent-task-dot.done  { background: #4ade80; }
+    .agent-task-title { font-size: 12px; color: var(--text-sub); line-height: 1.5; }
+    .agent-task-meta  { font-size: 10px; color: var(--text-dim); margin-top: 2px; }
+    .agent-no-tasks   { font-size: 12px; color: var(--text-faint); padding: 4px 0; }
+
     /* ── Skeleton ── */
     .skeleton {
       background: var(--skeleton);
@@ -628,6 +651,7 @@
       <div class="nav-tabs">
         <button class="nav-tab active" data-tab="overview">홈</button>
         <button class="nav-tab" data-tab="kanban">칸반</button>
+        <button class="nav-tab" data-tab="agents">에이전트</button>
       </div>
       <div class="nav-actions">
         <button id="theme-toggle" title="테마 전환">🌙</button>
@@ -707,6 +731,13 @@
           </div>
           <div id="col-done"></div>
         </div>
+      </div>
+    </section>
+
+    <!-- 에이전트 탭 -->
+    <section id="tab-agents" class="tab-content">
+      <div class="agent-panels" id="agent-panels">
+        <div style="height:180px" class="skeleton"></div>
       </div>
     </section>
 
@@ -844,7 +875,7 @@
 
     // Restore tab from hash
     const hash = location.hash.replace('#', '');
-    if (hash === 'kanban') switchTab(hash);
+    if (['kanban', 'agents'].includes(hash)) switchTab(hash);
 
     // ── Utilities ──
     function fmt(n) { return (n || 0).toLocaleString('ko-KR'); }
@@ -872,6 +903,7 @@
 
     // ── Overview render ──
     function renderOverview(data) {
+      _cachedTokens = data;
       const agents = data.agents || [];
       const totalInput = agents.reduce((s, a) => s + (a.inputTokens || 0), 0);
       const totalOutput = agents.reduce((s, a) => s + (a.outputTokens || 0), 0);
@@ -1112,6 +1144,93 @@
     });
 
     loadKanban();
+
+    // ── Pixel art sprites ──
+    const SPRITES = {
+      gary: {
+        p: ['','#3d9970','#2ecc71','#27ae60','#f0f0f0'],
+        f: [
+          [0,0,0,2,2,0,0,0,0,0,2,3,3,2,0,0,0,2,3,4,3,3,2,0,0,2,3,3,3,3,2,0,0,0,2,3,3,2,0,0,0,0,0,2,2,3,2,0,0,0,0,0,2,3,2,0,0,0,0,0,0,2,0,0],
+          [0,0,0,2,2,0,0,0,0,0,2,3,3,2,0,0,0,2,3,4,3,3,2,0,0,2,3,3,3,3,2,0,0,0,2,3,3,3,2,0,0,0,0,2,2,3,2,0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,0,0],
+        ]
+      },
+      judy: {
+        p: ['','#c4b5fd','#a78bfa','#7c3aed','#f3f0ff','#f87171'],
+        f: [
+          [0,1,0,0,0,0,1,0,0,1,0,0,0,0,1,0,0,4,4,4,4,4,4,0,4,4,5,4,4,5,4,4,4,4,4,4,4,4,4,4,0,4,2,4,4,2,4,0,0,0,4,4,4,4,0,0,0,1,0,0,0,0,1,0],
+          [1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,0,4,4,4,4,4,4,0,4,4,5,4,4,5,4,4,4,4,4,4,4,4,4,4,0,4,2,4,4,2,4,0,0,0,4,4,4,4,0,0,0,0,1,0,0,1,0,0],
+        ]
+      },
+      nick: {
+        p: ['','#f97316','#ea580c','#c2410c','#fed7aa','#1a1a1a'],
+        f: [
+          [1,0,0,0,0,0,0,1,1,1,0,0,0,0,1,1,0,1,4,4,4,4,1,0,0,4,4,5,5,4,4,0,0,4,4,4,4,4,4,0,0,0,2,4,4,2,0,0,0,1,0,4,4,0,1,0,1,0,0,0,0,0,0,1],
+          [0,1,0,0,0,0,1,0,1,1,0,0,0,0,1,1,0,1,4,4,4,4,1,0,0,4,4,5,5,4,4,0,0,4,4,4,4,4,4,0,0,0,2,4,4,2,0,0,0,1,0,4,4,0,1,0,0,1,0,0,0,0,1,0],
+        ]
+      }
+    };
+
+    const _animTimers = {};
+    function _draw(canvas, sp, fi) {
+      const ctx = canvas.getContext('2d');
+      const sc = canvas.width / 8;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      sp.f[fi % sp.f.length].forEach((v, i) => {
+        if (!sp.p[v]) return;
+        ctx.fillStyle = sp.p[v];
+        ctx.fillRect((i % 8) * sc, Math.floor(i / 8) * sc, sc, sc);
+      });
+    }
+    function _startAnim(id) {
+      const sp = SPRITES[id];
+      const el = document.getElementById('px-' + id);
+      if (!sp || !el) return;
+      let fi = 0;
+      _draw(el, sp, fi);
+      _animTimers[id] = setInterval(() => { fi = (fi + 1) % sp.f.length; _draw(el, sp, fi); }, 600);
+    }
+
+    // ── Agent panels ──
+    const _SL = { todo: '대기', doing: '진행 중', done: '완료' };
+    const _PL = { high: '높음', medium: '보통', low: '낮음' };
+    let _cachedTokens = null;
+
+    function renderAgentPanels() {
+      if (!_cachedTokens) return;
+      Object.values(_animTimers).forEach(clearInterval);
+      const kd = kanbanData;
+      document.getElementById('agent-panels').innerHTML = _cachedTokens.agents.map(a => {
+        const modelShort = (a.model || '').split('/').pop();
+        const tasks = ['todo','doing','done'].flatMap(col =>
+          (kd[col] || []).map(t => ({ ...t, col }))
+        ).filter(t => t.agent === a.id);
+        const tasksHtml = tasks.length === 0
+          ? '<p class="agent-no-tasks">배정된 태스크 없음</p>'
+          : tasks.map(t => `<div class="agent-task-item">
+              <div class="agent-task-dot ${t.col}"></div>
+              <div>
+                <p class="agent-task-title">${escHtml(t.title)}</p>
+                <p class="agent-task-meta">${_SL[t.col]}${t.priority ? ' · ' + _PL[t.priority] : ''}</p>
+              </div>
+            </div>`).join('');
+        return `<div class="agent-panel">
+          <div class="agent-panel-header">
+            <canvas class="pixel-canvas" id="px-${a.id}" width="48" height="48"></canvas>
+            <div class="agent-panel-info">
+              <p class="agent-panel-name"><span class="tossface">${a.emoji}</span> ${a.name} (${a.englishName})</p>
+              <p class="agent-panel-role">${a.role} · ${modelShort}</p>
+            </div>
+          </div>
+          <div class="agent-task-list">${tasksHtml}</div>
+        </div>`;
+      }).join('');
+      _cachedTokens.agents.forEach(a => _startAnim(a.id));
+    }
+
+    // Re-render agents tab on tab click
+    tabs.forEach(t => {
+      if (t.dataset.tab === 'agents') t.addEventListener('click', renderAgentPanels);
+    });
   </script>
 </body>
 </html>
