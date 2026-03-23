@@ -294,25 +294,7 @@
     .last-activity { font-size: 11px; color: var(--text-dim); }
     .last-activity-time { color: var(--text-muted); }
 
-    /* ── Activity tab ── */
-    .activity-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 16px;
-      margin-bottom: 28px;
-    }
-    .activity-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 22px;
-    }
-    .activity-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 20px;
-    }
+    /* ── Status dot ── */
     .status-dot {
       width: 8px;
       height: 8px;
@@ -321,19 +303,6 @@
     }
     .status-dot.active { background: #4ade80; box-shadow: 0 0 6px #4ade8088; }
     .status-dot.idle { background: var(--text-faint); }
-    .activity-name { font-size: 15px; font-weight: 600; color: var(--text); }
-    .activity-status { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-
-    .activity-stat-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 0;
-      border-top: 1px solid var(--border);
-      font-size: 13px;
-    }
-    .activity-stat-label { color: var(--text-muted); }
-    .activity-stat-value { color: var(--text); font-weight: 500; font-variant-numeric: tabular-nums; }
 
     /* ── Kanban tab ── */
     .kanban-toolbar {
@@ -560,7 +529,6 @@
       .summary-value { font-size: 28px; }
       .bar-row { grid-template-columns: 70px 1fr 80px; gap: 10px; }
       .cards { grid-template-columns: 1fr; }
-      .activity-grid { grid-template-columns: 1fr; }
       .kanban-board { grid-template-columns: 1fr; }
     }
   </style>
@@ -575,8 +543,7 @@
         <span>ZPD</span>
       </a>
       <div class="nav-tabs">
-        <button class="nav-tab active" data-tab="overview">개요</button>
-        <button class="nav-tab" data-tab="activity">활성 시간</button>
+        <button class="nav-tab active" data-tab="overview">홈</button>
         <button class="nav-tab" data-tab="kanban">칸반</button>
       </div>
       <div class="nav-actions">
@@ -625,17 +592,6 @@
       </div>
 
       <footer>ZPD · 최근 갱신: <span id="data-updated">로딩 중...</span></footer>
-    </section>
-
-    <!-- 활성 시간 탭 -->
-    <section id="tab-activity" class="tab-content">
-      <p class="section-title">에이전트 활동 현황</p>
-      <div class="activity-grid" id="activity-grid">
-        <div class="agent-card"><div style="height:160px" class="skeleton"></div></div>
-        <div class="agent-card"><div style="height:160px" class="skeleton"></div></div>
-        <div class="agent-card"><div style="height:160px" class="skeleton"></div></div>
-      </div>
-      <footer>ZPD · 최근 갱신: <span id="data-updated-2">로딩 중...</span></footer>
     </section>
 
     <!-- 칸반 탭 -->
@@ -757,7 +713,7 @@
 
     // Restore tab from hash
     const hash = location.hash.replace('#', '');
-    if (['activity', 'kanban'].includes(hash)) switchTab(hash);
+    if (hash === 'kanban') switchTab(hash);
 
     // ── Utilities ──
     function fmt(n) { return (n || 0).toLocaleString('ko-KR'); }
@@ -791,7 +747,6 @@
         ? new Date(data.updatedAt).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })
         : '알 수 없음';
       document.getElementById('data-updated').textContent = updatedText;
-      document.getElementById('data-updated-2').textContent = updatedText;
 
       // Bar chart
       document.getElementById('bar-section').innerHTML = agents.map(a => {
@@ -815,7 +770,10 @@
             <div class="agent-identity">
               <span class="agent-emoji tossface">${a.emoji}</span>
               <div class="agent-info">
-                <p class="agent-name">${a.name} (${a.englishName})</p>
+                <div style="display:flex;align-items:center;gap:6px">
+                  <span class="status-dot ${isActive(a.updatedAt) ? 'active' : 'idle'}"></span>
+                  <p class="agent-name">${a.name} (${a.englishName})</p>
+                </div>
                 <p class="agent-role">${a.role}</p>
               </div>
             </div>
@@ -838,43 +796,6 @@
       }).join('');
     }
 
-    // ── Activity render ──
-    function renderActivity(data) {
-      const agents = data.agents || [];
-      const AGENT_META = { gary: '기술 검토', judy: '기능 구현', nick: '일정 관리' };
-
-      document.getElementById('activity-grid').innerHTML = agents.map(a => {
-        const active = isActive(a.updatedAt);
-        const totalTokens = (a.inputTokens || 0) + (a.outputTokens || 0);
-        const ctxPct = a.contextTokens > 0 ? ((a.totalTokens / a.contextTokens) * 100).toFixed(1) : '0';
-        return `<div class="activity-card">
-          <div class="activity-header">
-            <div class="status-dot ${active ? 'active' : 'idle'}"></div>
-            <div>
-              <p class="activity-name"><span class="tossface">${a.emoji}</span> ${a.name}</p>
-              <p class="activity-status">${active ? '활성' : '유휴'} · ${a.role}</p>
-            </div>
-          </div>
-          <div class="activity-stat-row">
-            <span class="activity-stat-label">마지막 활동</span>
-            <span class="activity-stat-value">${relTime(a.updatedAt)}</span>
-          </div>
-          <div class="activity-stat-row">
-            <span class="activity-stat-label">총 토큰</span>
-            <span class="activity-stat-value">${fmt(totalTokens)}</span>
-          </div>
-          <div class="activity-stat-row">
-            <span class="activity-stat-label">컨텍스트</span>
-            <span class="activity-stat-value">${ctxPct}%</span>
-          </div>
-          <div class="activity-stat-row">
-            <span class="activity-stat-label">모델</span>
-            <span class="activity-stat-value" style="font-size:11px">${(a.model || '').split('/').pop()}</span>
-          </div>
-        </div>`;
-      }).join('');
-    }
-
     // ── Data fetch ──
     async function loadData() {
       try {
@@ -882,7 +803,6 @@
         if (!res.ok) throw new Error(res.status);
         const data = await res.json();
         renderOverview(data);
-        renderActivity(data);
       } catch (e) {
         console.error('Failed to load tokens:', e);
       }
