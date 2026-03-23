@@ -61,33 +61,28 @@
     body {
       min-height: 100vh;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
+      gap: 16px;
       background: var(--bg);
       font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       transition: background 0.2s;
-      position: relative;
       padding: 24px 16px;
     }
 
     .theme-toggle {
-      position: fixed;
-      top: 16px;
-      right: 16px;
-      background: var(--toggle-bg);
-      border: 1px solid var(--toggle-border);
-      color: var(--text-muted);
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
-      font-size: 16px;
+      background: none;
+      border: none;
+      font-size: 24px;
       font-family: Tossface;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.2s;
+      opacity: 0.5;
+      transition: opacity 0.15s;
+      padding: 4px;
+      line-height: 1;
     }
+    .theme-toggle:hover { opacity: 1; }
 
     .card {
       background: var(--surface);
@@ -183,8 +178,6 @@
   </style>
 </head>
 <body>
-  <button class="theme-toggle" id="theme-toggle" title="테마 전환">🌙</button>
-
   <div class="card">
     <div class="logo">
       <span class="logo-icon tossface">🐾</span>
@@ -201,6 +194,8 @@
 
     <button class="submit" id="submit-btn">입장하기</button>
   </div>
+
+  <button class="theme-toggle" id="theme-toggle" title="테마 전환">🌙</button>
 
   <script>
     const HASH = 'c3d4c44e848a92a8ffd0d8cdd78dd95c796104c8005346aff46f8c7376671cf4';
