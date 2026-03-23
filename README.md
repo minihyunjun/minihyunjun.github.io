@@ -15,7 +15,7 @@ npm install
 npm run dev
 ```
 
-## 🔄 토큰 데이터 갱신
+
 
 ```bash
 python scripts/generate-tokens.py
