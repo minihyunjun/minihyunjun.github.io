@@ -1,22 +1,7 @@
 ---
+import Layout from '../layouts/Layout.astro';
 ---
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ZPD Dashboard</title>
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
-  <link href="https://cdn.jsdelivr.net/gh/toss/tossface/dist/tossface.css" rel="stylesheet" type="text/css" />
-  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/packages/pretendard/dist/web/variable/pretendardvariable.css" rel="stylesheet" type="text/css" />
-  <script is:inline>
-    (function () {
-      const saved = localStorage.getItem('oc_theme');
-      const sys = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-      document.documentElement.setAttribute('data-theme', saved || sys);
-    })();
-  </script>
+<Layout title="ZPD Dashboard">
   <style is:global>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -638,8 +623,6 @@
       .kanban-board { grid-template-columns: 1fr; }
     }
   </style>
-</head>
-<body>
 
   <!-- Navbar -->
   <nav class="navbar">
@@ -832,6 +815,8 @@
   </div>
 
   <script>
+    import { startAnim, clearAllAnims } from '../scripts/pixelArt.js';
+
     // ── Auth guard ──
     if (sessionStorage.getItem('oc_auth') !== '1') {
       window.location.replace('/');
@@ -1149,141 +1134,6 @@
 
     loadKanban();
 
-    // ── Pixel art sprites (16×16) ──
-    const _F_IDLE = [
-      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-      0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,
-      0,0,0,1,1,2,1,1,1,2,1,1,0,0,0,0,
-      0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,
-      0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,
-      0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,
-      0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,
-      0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,
-      0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,
-      0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,
-      0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,
-      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    ];
-    const _F_BLINK = [
-      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-      0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,
-      0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,
-      0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,
-      0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,
-      0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,
-      0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,
-      0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,
-      0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,
-      0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,
-      0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,
-      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    ];
-    const _F_WALK1 = [  // 오른팔 위(row5), 왼팔 아래(row7), 팔 cols 1-13
-      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-      0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,
-      0,0,0,1,1,2,1,1,1,2,1,1,0,0,0,0,
-      0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,
-      0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,
-      0,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,
-      0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,
-      0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,
-      0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,
-      0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,
-      0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,
-      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    ];
-    const _F_WALK2 = [  // 왼팔 위(row5), 오른팔 아래(row7), 팔 cols 1-13
-      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-      0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,
-      0,0,0,1,1,2,1,1,1,2,1,1,0,0,0,0,
-      0,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,
-      0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,
-      0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,
-      0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,
-      0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,
-      0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,
-      0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,
-      0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,
-      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    ];
-    const SPRITES = {
-      gary: { p: ['','#4ade80','#1a1a1a'], frames: { idle: _F_IDLE, blink: _F_BLINK, walk1: _F_WALK1, walk2: _F_WALK2 } },
-      judy: { p: ['','#c084fc','#1a1a1a'], frames: { idle: _F_IDLE, blink: _F_BLINK, walk1: _F_WALK1, walk2: _F_WALK2 } },
-      nick:  { p: ['','#fb923c','#1a1a1a'], frames: { idle: _F_IDLE, blink: _F_BLINK, walk1: _F_WALK1, walk2: _F_WALK2 } },
-    };
-
-    const _animTimers = {};
-    function _draw(canvas, sp, frameName, xOff = 0) {
-      const frame = sp.frames[frameName];
-      if (!frame) return;
-      const ctx = canvas.getContext('2d');
-      const sc = canvas.height / 16; // height 기준 고정 스케일 (48/16=3)
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.save();
-      ctx.translate((1 + xOff) * sc, 0); // 좌측 1열 버퍼 + 이동량
-      frame.forEach((v, i) => {
-        if (!sp.p[v]) return;
-        ctx.fillStyle = sp.p[v];
-        ctx.fillRect((i % 16) * sc, Math.floor(i / 16) * sc, sc, sc);
-      });
-      ctx.restore();
-    }
-    function _startAnim(id) {
-      const sp = SPRITES[id];
-      const el = document.getElementById('px-' + id);
-      if (!sp || !el) return;
-      // [xOff, frameName]: 이동하면서 팔도 교대로 흔들림
-      const fwdSeq = [[1,'walk1'],[2,'walk2'],[2,'walk1'],[1,'walk2'],[0,'idle']];
-      const bckSeq = [[-1,'walk1'],[-2,'walk2'],[-2,'walk1'],[-1,'walk2'],[0,'idle']];
-      let phase = 'idle';
-      let moveSeq = null;
-      let moveIdx = 0;
-      let idleTicks = 0;
-      function nextIdleTicks() { return 30 + Math.floor(Math.random() * 25); }
-      let targetTicks = nextIdleTicks();
-      _draw(el, sp, 'idle', 0);
-      const initDelay = Math.floor(Math.random() * 4000);
-      setTimeout(() => {
-        _animTimers[id] = setInterval(() => {
-          if (phase === 'idle') {
-            idleTicks++;
-            if (Math.random() < 0.02) {
-              _draw(el, sp, 'blink', 0);
-              setTimeout(() => { if (phase === 'idle') _draw(el, sp, 'idle', 0); }, 100);
-            }
-            if (idleTicks >= targetTicks) {
-              phase = 'moving';
-              moveSeq = Math.random() < 0.5 ? fwdSeq : bckSeq;
-              moveIdx = 0;
-              idleTicks = 0;
-              targetTicks = nextIdleTicks();
-            }
-          } else {
-            const [xOff, fn] = moveSeq[moveIdx];
-            _draw(el, sp, fn, xOff);
-            moveIdx++;
-            if (moveIdx >= moveSeq.length) phase = 'idle';
-          }
-        }, 160);
-      }, initDelay);
-    }
-
     // ── Agent panels ──
     const _SL = { todo: '대기', doing: '진행 중', done: '완료' };
     const _PL = { high: '높음', medium: '보통', low: '낮음' };
@@ -1291,7 +1141,7 @@
 
     function renderAgentPanels() {
       if (!_cachedTokens) return;
-      Object.values(_animTimers).forEach(clearInterval);
+      clearAllAnims();
       const kd = kanbanData;
       document.getElementById('agent-panels').innerHTML = _cachedTokens.agents.map(a => {
         const modelShort = (a.model || '').split('/').pop();
@@ -1318,7 +1168,7 @@
           <div class="agent-task-list">${tasksHtml}</div>
         </div>`;
       }).join('');
-      _cachedTokens.agents.forEach(a => _startAnim(a.id));
+      _cachedTokens.agents.forEach(a => startAnim(a.id));
     }
 
     // Re-render agents tab on tab click
@@ -1326,5 +1176,4 @@
       if (t.dataset.tab === 'agents') t.addEventListener('click', renderAgentPanels);
     });
   </script>
-</body>
-</html>
+</Layout>

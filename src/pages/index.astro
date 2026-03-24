@@ -1,23 +1,8 @@
 ---
+import Layout from '../layouts/Layout.astro';
 ---
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ZPD</title>
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
-  <link href="https://cdn.jsdelivr.net/gh/toss/tossface/dist/tossface.css" rel="stylesheet" type="text/css" />
-  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/packages/pretendard/dist/web/variable/pretendardvariable.css" rel="stylesheet" type="text/css" />
-  <script is:inline>
-    (function () {
-      const saved = localStorage.getItem('oc_theme');
-      const sys = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-      document.documentElement.setAttribute('data-theme', saved || sys);
-    })();
-  </script>
-  <style>
+<Layout title="ZPD">
+  <style is:global>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     [data-theme="dark"] {
@@ -173,8 +158,6 @@
     button.submit:hover { background: var(--btn-hover-bg); }
     button.submit:active { transform: scale(0.98); }
   </style>
-</head>
-<body>
   <div class="card">
     <div class="logo">
       <span class="logo-icon tossface">🐾</span>
@@ -244,5 +227,4 @@
       document.getElementById('error-msg').classList.remove('visible');
     });
   </script>
-</body>
-</html>
+</Layout>
