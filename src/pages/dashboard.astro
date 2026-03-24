@@ -1186,10 +1186,47 @@
       0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
       0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     ];
+    // 걷기 프레임: 팔 cols 2-12 (±2 이동 시 canvas 밖으로 안 나감)
+    const _F_WALK1 = [  // 오른팔 위(row5), 왼팔 아래(row7)
+      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+      0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,
+      0,0,0,1,1,2,1,1,1,2,1,1,0,0,0,0,
+      0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,
+      0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,0,
+      0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,
+      0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,
+      0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,
+      0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,
+      0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,
+      0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,
+      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    ];
+    const _F_WALK2 = [  // 왼팔 위(row5), 오른팔 아래(row7)
+      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+      0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,
+      0,0,0,1,1,2,1,1,1,2,1,1,0,0,0,0,
+      0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,
+      0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,0,
+      0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,
+      0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,
+      0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,
+      0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,
+      0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,
+      0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,
+      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    ];
     const SPRITES = {
-      gary: { p: ['','#4ade80','#1a1a1a'], frames: { idle: _F_IDLE, blink: _F_BLINK } },
-      judy: { p: ['','#c084fc','#1a1a1a'], frames: { idle: _F_IDLE, blink: _F_BLINK } },
-      nick:  { p: ['','#fb923c','#1a1a1a'], frames: { idle: _F_IDLE, blink: _F_BLINK } },
+      gary: { p: ['','#4ade80','#1a1a1a'], frames: { idle: _F_IDLE, blink: _F_BLINK, walk1: _F_WALK1, walk2: _F_WALK2 } },
+      judy: { p: ['','#c084fc','#1a1a1a'], frames: { idle: _F_IDLE, blink: _F_BLINK, walk1: _F_WALK1, walk2: _F_WALK2 } },
+      nick:  { p: ['','#fb923c','#1a1a1a'], frames: { idle: _F_IDLE, blink: _F_BLINK, walk1: _F_WALK1, walk2: _F_WALK2 } },
     };
 
     const _animTimers = {};
@@ -1212,9 +1249,9 @@
       const sp = SPRITES[id];
       const el = document.getElementById('px-' + id);
       if (!sp || !el) return;
-      // 앞뒤 이동: x오프셋 시퀀스 (1픽셀 단위, 캔버스에서 3px)
-      const fwdSeq = [1, 2, 2, 1, 0];
-      const bckSeq = [-1, -2, -2, -1, 0];
+      // [xOff, frameName]: 이동하면서 팔도 교대로 흔들림
+      const fwdSeq = [[1,'walk1'],[2,'walk2'],[2,'walk1'],[1,'walk2'],[0,'idle']];
+      const bckSeq = [[-1,'walk1'],[-2,'walk2'],[-2,'walk1'],[-1,'walk2'],[0,'idle']];
       let phase = 'idle';
       let moveSeq = null;
       let moveIdx = 0;
@@ -1222,7 +1259,6 @@
       function nextIdleTicks() { return 30 + Math.floor(Math.random() * 25); }
       let targetTicks = nextIdleTicks();
       _draw(el, sp, 'idle', 0);
-      // 에이전트별 랜덤 초기 딜레이로 각각 독립적으로 움직임
       const initDelay = Math.floor(Math.random() * 4000);
       setTimeout(() => {
         _animTimers[id] = setInterval(() => {
@@ -1240,12 +1276,10 @@
               targetTicks = nextIdleTicks();
             }
           } else {
-            _draw(el, sp, 'idle', moveSeq[moveIdx]);
+            const [xOff, fn] = moveSeq[moveIdx];
+            _draw(el, sp, fn, xOff);
             moveIdx++;
-            if (moveIdx >= moveSeq.length) {
-              phase = 'idle';
-              _draw(el, sp, 'idle', 0);
-            }
+            if (moveIdx >= moveSeq.length) phase = 'idle';
           }
         }, 160);
       }, initDelay);
