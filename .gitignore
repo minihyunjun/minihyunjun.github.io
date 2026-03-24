@@ -5,12 +5,6 @@ node_modules/
 .DS_Store
 .openclaw/
 memory/
-AGENTS.md
-HEARTBEAT.md
-IDENTITY.md
-SOUL.md
-TOOLS.md
-USER.md
 dashboard-brief.md
 PROJECT.md
 .notes/
