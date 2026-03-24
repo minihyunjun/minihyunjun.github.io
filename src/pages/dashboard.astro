@@ -1186,92 +1186,69 @@
       0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
       0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     ];
-    const _F_WALK1 = [  // 오른팔 위, 왼팔 아래 / 다리 벌림
-      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-      0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,
-      0,0,0,1,1,2,1,1,1,2,1,1,0,0,0,0,
-      0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,
-      0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,
-      0,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,
-      0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,
-      0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,
-      0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,
-      0,0,1,0,1,0,0,0,0,0,1,0,1,0,0,0,
-      0,0,1,0,1,0,0,0,0,0,1,0,1,0,0,0,
-      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    ];
-    const _F_WALK2 = [  // 왼팔 위, 오른팔 아래 / 다리 모음
-      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-      0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,
-      0,0,0,1,1,2,1,1,1,2,1,1,0,0,0,0,
-      0,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,
-      0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,
-      0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,
-      0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,
-      0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,
-      0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,
-      0,0,0,0,1,0,1,0,1,0,1,0,0,0,0,0,
-      0,0,0,0,1,0,1,0,1,0,1,0,0,0,0,0,
-      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    ];
     const SPRITES = {
-      gary: { p: ['','#4ade80','#1a1a1a'], frames: { idle: _F_IDLE, blink: _F_BLINK, walk1: _F_WALK1, walk2: _F_WALK2 } },
-      judy: { p: ['','#c084fc','#1a1a1a'], frames: { idle: _F_IDLE, blink: _F_BLINK, walk1: _F_WALK1, walk2: _F_WALK2 } },
-      nick:  { p: ['','#fb923c','#1a1a1a'], frames: { idle: _F_IDLE, blink: _F_BLINK, walk1: _F_WALK1, walk2: _F_WALK2 } },
+      gary: { p: ['','#4ade80','#1a1a1a'], frames: { idle: _F_IDLE, blink: _F_BLINK } },
+      judy: { p: ['','#c084fc','#1a1a1a'], frames: { idle: _F_IDLE, blink: _F_BLINK } },
+      nick:  { p: ['','#fb923c','#1a1a1a'], frames: { idle: _F_IDLE, blink: _F_BLINK } },
     };
 
     const _animTimers = {};
-    function _draw(canvas, sp, frameName) {
+    function _draw(canvas, sp, frameName, xOff = 0) {
       const frame = sp.frames[frameName];
       if (!frame) return;
       const ctx = canvas.getContext('2d');
       const sc = canvas.width / 16;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.save();
+      ctx.translate(xOff * sc, 0);
       frame.forEach((v, i) => {
         if (!sp.p[v]) return;
         ctx.fillStyle = sp.p[v];
         ctx.fillRect((i % 16) * sc, Math.floor(i / 16) * sc, sc, sc);
       });
+      ctx.restore();
     }
     function _startAnim(id) {
       const sp = SPRITES[id];
       const el = document.getElementById('px-' + id);
       if (!sp || !el) return;
-      const walkSeq = ['walk1','walk2','walk1','walk2','walk1','walk2'];
+      // 앞뒤 이동: x오프셋 시퀀스 (1픽셀 단위, 캔버스에서 3px)
+      const fwdSeq = [1, 2, 2, 1, 0];
+      const bckSeq = [-1, -2, -2, -1, 0];
       let phase = 'idle';
-      let walkIdx = 0;
+      let moveSeq = null;
+      let moveIdx = 0;
       let idleTicks = 0;
-      const IDLE_TICKS = 20; // ~3초 대기 후 걷기 시작
-      _draw(el, sp, 'idle');
-      _animTimers[id] = setInterval(() => {
-        if (phase === 'idle') {
-          idleTicks++;
-          if (Math.random() < 0.07) {
-            _draw(el, sp, 'blink');
-            setTimeout(() => { if (phase === 'idle') _draw(el, sp, 'idle'); }, 120);
+      function nextIdleTicks() { return 30 + Math.floor(Math.random() * 25); }
+      let targetTicks = nextIdleTicks();
+      _draw(el, sp, 'idle', 0);
+      // 에이전트별 랜덤 초기 딜레이로 각각 독립적으로 움직임
+      const initDelay = Math.floor(Math.random() * 4000);
+      setTimeout(() => {
+        _animTimers[id] = setInterval(() => {
+          if (phase === 'idle') {
+            idleTicks++;
+            if (Math.random() < 0.02) {
+              _draw(el, sp, 'blink', 0);
+              setTimeout(() => { if (phase === 'idle') _draw(el, sp, 'idle', 0); }, 100);
+            }
+            if (idleTicks >= targetTicks) {
+              phase = 'moving';
+              moveSeq = Math.random() < 0.5 ? fwdSeq : bckSeq;
+              moveIdx = 0;
+              idleTicks = 0;
+              targetTicks = nextIdleTicks();
+            }
+          } else {
+            _draw(el, sp, 'idle', moveSeq[moveIdx]);
+            moveIdx++;
+            if (moveIdx >= moveSeq.length) {
+              phase = 'idle';
+              _draw(el, sp, 'idle', 0);
+            }
           }
-          if (idleTicks >= IDLE_TICKS) {
-            phase = 'walking';
-            walkIdx = 0;
-            idleTicks = 0;
-          }
-        } else {
-          _draw(el, sp, walkSeq[walkIdx]);
-          walkIdx++;
-          if (walkIdx >= walkSeq.length) {
-            phase = 'idle';
-            _draw(el, sp, 'idle');
-          }
-        }
-      }, 150);
+        }, 160);
+      }, initDelay);
     }
 
     // ── Agent panels ──
