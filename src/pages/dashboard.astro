@@ -219,73 +219,6 @@ import Layout from '../layouts/Layout.astro';
     .bar-fill { height: 100%; border-radius: 99px; transition: width 0.8s cubic-bezier(0.4,0,0.2,1); }
     .bar-count { font-size: 14px; color: var(--text-muted); text-align: right; font-family: 'JetBrains Mono', monospace; }
 
-    /* ── Overview: Agent cards ── */
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 16px;
-    }
-    .agent-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 22px;
-      transition: border-color 0.2s;
-    }
-    .agent-card:hover { border-color: var(--border-hover); }
-    .agent-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      margin-bottom: 18px;
-      gap: 8px;
-      min-width: 0;
-    }
-    .agent-identity { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1; }
-    .agent-emoji { font-size: 22px; flex-shrink: 0; }
-    .agent-info { min-width: 0; flex: 1; }
-    .agent-name { font-size: 16px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .agent-role { font-size: 13px; color: var(--text-dim); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .model-badge {
-      background: var(--badge-bg);
-      color: var(--badge-text);
-      font-size: 10px;
-      font-weight: 500;
-      padding: 3px 8px;
-      border-radius: 99px;
-      white-space: nowrap;
-      flex-shrink: 0;
-      margin-top: 2px;
-    }
-    .token-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
-    .token-block-label { font-size: 12px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
-    .token-block-value { font-size: 23px; font-weight: 700; color: var(--text); font-family: 'JetBrains Mono', monospace; }
-    .ctx-label {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      font-size: 13px;
-      color: var(--text-dim);
-      margin-bottom: 6px;
-      gap: 6px;
-    }
-    .ctx-label-left { flex-shrink: 0; }
-    .ctx-tokens { font-size: 12px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; }
-    .ctx-pct { font-weight: 700; flex-shrink: 0; }
-    .ctx-pct.over { color: #f87171; }
-    .ctx-track { height: 4px; background: var(--bar-track); border-radius: 99px; overflow: hidden; margin-bottom: 14px; }
-    .ctx-fill { height: 100%; border-radius: 99px; max-width: 100%; transition: width 0.8s cubic-bezier(0.4,0,0.2,1); }
-    .ctx-fill.over { background: #f87171 !important; }
-    .last-activity { font-size: 13px; color: var(--text-dim); }
-    .last-activity-time { color: var(--text-muted); }
-    .card-stats-row {
-      display: flex;
-      gap: 16px;
-      margin-top: 4px;
-    }
-    .card-stat { font-size: 12px; color: var(--text-dim); }
-    .card-stat span { color: var(--text-muted); }
-
     /* ── Status dot ── */
     .status-dot {
       width: 8px;
@@ -326,8 +259,6 @@ import Layout from '../layouts/Layout.astro';
       transition: color 0.2s, border-color 0.2s;
     }
     .kanban-add-btn:hover { color: var(--text); border-color: var(--border-hover); }
-
-    .kanban-board { display: none; /* replaced by .board-view */ }
 
     .kanban-col {
       background: var(--kanban-col-bg);
@@ -762,7 +693,6 @@ import Layout from '../layouts/Layout.astro';
       .stat-item { text-align: left; }
       .summary-value { font-size: 28px; }
       .bar-row { grid-template-columns: 70px 1fr 80px; gap: 10px; }
-      .cards { grid-template-columns: 1fr; }
       .board-view { grid-template-columns: 1fr; }
       .agent-panels { grid-template-columns: 1fr; }
     }
@@ -1446,9 +1376,5 @@ import Layout from '../layouts/Layout.astro';
       _cachedTokens.agents.forEach(a => startAnim(a.id));
     }
 
-    // Re-render agents tab on tab click
-    tabs.forEach(t => {
-      if (t.dataset.tab === 'agents') t.addEventListener('click', renderAgentPanels);
-    });
   </script>
 </Layout>
