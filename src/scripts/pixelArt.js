@@ -82,7 +82,7 @@ const _F_WALK_B = [
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 ];
 
-// 숨쉬기 프레임: 다리 고정, 머리+팔+몸통만 1픽셀 아래로
+// 숨쉬기 프레임: 머리+팔+몸통 1픽셀 아래로, 다리 고정 (몸통이 상단 다리 row를 덮어서 다리 1px 짧아 보이는 효과)
 const _F_BREATHE = [
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -95,7 +95,7 @@ const _F_BREATHE = [
   0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,
   0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,
   0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,
-  0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,
+  0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,
   0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -108,14 +108,14 @@ export const SPRITES = {
   nick:  { p: ['', '#fb923c', '#1a1a1a'], frames: { idle: _F_IDLE, blink: _F_BLINK, walk_a: _F_WALK_A, walk_b: _F_WALK_B, breathe: _F_BREATHE } },
 };
 
-function _draw(canvas, sp, frameName, xOff = 0) {
+function _draw(canvas, sp, frameName, xOff = 0, yOff = 0) {
   const frame = sp.frames[frameName];
   if (!frame) return;
   const ctx = canvas.getContext('2d');
   const sc = canvas.height / 16;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.save();
-  ctx.translate((1 + xOff) * sc, 0);
+  ctx.translate((1 + xOff) * sc, yOff * sc);
   frame.forEach((v, i) => {
     if (!sp.p[v]) return;
     ctx.fillStyle = sp.p[v];
@@ -152,15 +152,15 @@ export function startAnim(id) {
       if (phase === 'idle') {
         idleTicks++;
 
-        // 숨쉬기: breathing 중이면 up/down 반복
+        // 숨쉬기: breathing 중이면 down/normal 반복 (yOff로 전체 캐릭터를 1px 아래로)
         if (breathing) {
           breathTick++;
-          // 3틱마다 up↔down 전환 (3 × 120ms = 360ms)
-          const upPhase = Math.floor(breathTick / 3) % 2 === 0;
-          _draw(el, sp, upPhase ? 'breathe' : 'idle', 0);
+          // 3틱마다 down↔normal 전환 (3 × 120ms = 360ms)
+          const downPhase = Math.floor(breathTick / 3) % 2 === 0;
+          _draw(el, sp, 'idle', 0, downPhase ? 1 : 0);
           if (breathTick >= breathCycles * 6) {
             breathing = false;
-            _draw(el, sp, 'idle', 0);
+            _draw(el, sp, 'idle', 0, 0);
           }
           return;
         }
