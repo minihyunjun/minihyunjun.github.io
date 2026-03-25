@@ -792,7 +792,7 @@ import Layout from '../layouts/Layout.astro';
     <!-- 개요 탭 -->
     <section id="tab-overview" class="tab-content active">
       <p class="section-title">에이전트</p>
-      <div class="agent-panels" id="cards" style="margin-bottom:32px">
+      <div class="agent-panels" id="agent-panels" style="margin-bottom:32px">
         {[1,2,3].map(() => (
           <div class="agent-panel"><div style="height:220px" class="skeleton"></div></div>
         ))}
@@ -1102,49 +1102,8 @@ import Layout from '../layouts/Layout.astro';
         </div>`;
       }).join('');
 
-      // Re-render agents tab if currently active
-      const activeTab = document.querySelector('.nav-tab.active');
-      if (activeTab && activeTab.dataset.tab === 'agents') renderAgentPanels();
-
-      // Agent cards
-      document.getElementById('cards').innerHTML = agents.map(a => {
-        const ctxRatio = a.contextTokens > 0 ? (a.totalTokens / a.contextTokens) * 100 : 0;
-        const ctxBarWidth = Math.min(100, ctxRatio);
-        const isOver = ctxRatio > 100;
-        const modelShort = (a.model || '').split('/').pop() || a.model;
-        return `<div class="agent-card">
-          <div class="agent-header">
-            <div class="agent-identity">
-              <span class="agent-emoji tossface">${a.emoji}</span>
-              <div class="agent-info">
-                <div style="display:flex;align-items:center;gap:6px">
-                  <span class="status-dot ${isActive(a.updatedAt) ? 'active' : 'idle'}"></span>
-                  <p class="agent-name">${a.name} (${a.englishName})</p>
-                </div>
-                <p class="agent-role">${a.role}</p>
-              </div>
-            </div>
-            <span class="model-badge">${modelShort}</span>
-          </div>
-          <div class="token-row">
-            <div><p class="token-block-label">Input</p><p class="token-block-value">${fmt(a.inputTokens)}</p></div>
-            <div><p class="token-block-label">Output</p><p class="token-block-value">${fmt(a.outputTokens)}</p></div>
-          </div>
-          <div class="ctx-label">
-            <span class="ctx-label-left">컨텍스트 사용량</span>
-            <span class="ctx-tokens">${fmt(a.totalTokens)} / ${fmt(a.contextTokens)}</span>
-            <span class="ctx-pct${isOver ? ' over' : ''}">${ctxRatio.toFixed(1)}%${isOver ? ' ↑' : ''}</span>
-          </div>
-          <div class="ctx-track">
-            <div class="ctx-fill${isOver ? ' over' : ''}" style="width:${ctxBarWidth}%;${isOver ? '' : `background:${a.color}`}"></div>
-          </div>
-          <div class="card-stats-row">
-            <p class="card-stat">마지막 활동 <span>${relTime(a.updatedAt)}</span></p>
-            <p class="card-stat">총 활동 <span>${activeDuration(a.activeMs)}</span></p>
-            <p class="card-stat">세션 <span>${a.sessionCount || '—'}회</span></p>
-          </div>
-        </div>`;
-      }).join('');
+      // Render agent panels with pixel art
+      renderAgentPanels();
     }
 
     // ── Data fetch ──
