@@ -168,7 +168,7 @@ import Layout from '../layouts/Layout.astro';
 
     /* ── Section title ── */
     .section-title {
-      font-size: 11px;
+      font-size: 13px;
       font-weight: 500;
       color: var(--text-muted);
       text-transform: uppercase;
@@ -190,13 +190,13 @@ import Layout from '../layouts/Layout.astro';
       flex-wrap: wrap;
     }
     .summary-main { flex: 1; min-width: 160px; }
-    .summary-label { font-size: 13px; color: var(--text-muted); margin-bottom: 6px; }
-    .summary-value { font-size: 36px; font-weight: 700; color: var(--text); letter-spacing: -1px; }
-    .summary-sub { font-size: 13px; color: var(--text-dim); margin-top: 4px; }
-    .summary-stats { display: flex; gap: 32px; flex-wrap: wrap; }
+    .summary-label { font-size: 15px; color: var(--text-muted); margin-bottom: 6px; }
+    .summary-value { font-size: 40px; font-weight: 700; color: var(--text); letter-spacing: -1px; }
+    .summary-sub { font-size: 14px; color: var(--text-dim); margin-top: 4px; }
+    .summary-stats { display: flex; gap: 28px; flex-wrap: wrap; }
     .stat-item { text-align: right; }
-    .stat-label { font-size: 11px; color: var(--text-dim); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
-    .stat-value { font-size: 18px; font-weight: 600; color: var(--text-sub); }
+    .stat-label { font-size: 12px; color: var(--text-dim); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .stat-value { font-size: 22px; font-weight: 600; color: var(--text-sub); }
 
     /* ── Overview: Bar chart ── */
     .bar-section {
@@ -214,10 +214,10 @@ import Layout from '../layouts/Layout.astro';
       margin-bottom: 18px;
     }
     .bar-row:last-child { margin-bottom: 0; }
-    .bar-label { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: var(--text-sub); }
+    .bar-label { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 500; color: var(--text-sub); }
     .bar-track { height: 10px; background: var(--bar-track); border-radius: 99px; overflow: hidden; }
     .bar-fill { height: 100%; border-radius: 99px; transition: width 0.8s cubic-bezier(0.4,0,0.2,1); }
-    .bar-count { font-size: 13px; color: var(--text-muted); text-align: right; font-variant-numeric: tabular-nums; }
+    .bar-count { font-size: 14px; color: var(--text-muted); text-align: right; font-variant-numeric: tabular-nums; }
 
     /* ── Overview: Agent cards ── */
     .cards {
@@ -244,8 +244,8 @@ import Layout from '../layouts/Layout.astro';
     .agent-identity { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1; }
     .agent-emoji { font-size: 22px; flex-shrink: 0; }
     .agent-info { min-width: 0; flex: 1; }
-    .agent-name { font-size: 15px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .agent-role { font-size: 11px; color: var(--text-dim); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .agent-name { font-size: 16px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .agent-role { font-size: 13px; color: var(--text-dim); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .model-badge {
       background: var(--badge-bg);
       color: var(--badge-text);
@@ -258,32 +258,32 @@ import Layout from '../layouts/Layout.astro';
       margin-top: 2px;
     }
     .token-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
-    .token-block-label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
-    .token-block-value { font-size: 20px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
+    .token-block-label { font-size: 12px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+    .token-block-value { font-size: 23px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
     .ctx-label {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      font-size: 11px;
+      font-size: 13px;
       color: var(--text-dim);
       margin-bottom: 6px;
       gap: 6px;
     }
     .ctx-label-left { flex-shrink: 0; }
-    .ctx-tokens { font-size: 11px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
+    .ctx-tokens { font-size: 12px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
     .ctx-pct { font-weight: 700; flex-shrink: 0; }
     .ctx-pct.over { color: #f87171; }
     .ctx-track { height: 4px; background: var(--bar-track); border-radius: 99px; overflow: hidden; margin-bottom: 14px; }
     .ctx-fill { height: 100%; border-radius: 99px; max-width: 100%; transition: width 0.8s cubic-bezier(0.4,0,0.2,1); }
     .ctx-fill.over { background: #f87171 !important; }
-    .last-activity { font-size: 11px; color: var(--text-dim); }
+    .last-activity { font-size: 13px; color: var(--text-dim); }
     .last-activity-time { color: var(--text-muted); }
     .card-stats-row {
       display: flex;
       gap: 16px;
       margin-top: 4px;
     }
-    .card-stat { font-size: 11px; color: var(--text-dim); }
+    .card-stat { font-size: 12px; color: var(--text-dim); }
     .card-stat span { color: var(--text-muted); }
 
     /* ── Status dot ── */
@@ -342,14 +342,14 @@ import Layout from '../layouts/Layout.astro';
       margin-bottom: 14px;
     }
     .kanban-col-title {
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 600;
       color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 0.8px;
     }
     .kanban-col-count {
-      font-size: 11px;
+      font-size: 12px;
       color: var(--text-dim);
       background: var(--badge-bg);
       padding: 2px 7px;
@@ -368,7 +368,7 @@ import Layout from '../layouts/Layout.astro';
     .kanban-card:last-child { margin-bottom: 0; }
 
     .kanban-card-title {
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 500;
       color: var(--text);
       margin-bottom: 10px;
@@ -430,7 +430,7 @@ import Layout from '../layouts/Layout.astro';
     .kanban-empty {
       text-align: center;
       color: var(--text-faint);
-      font-size: 13px;
+      font-size: 14px;
       padding: 24px 0;
     }
 
@@ -467,7 +467,7 @@ import Layout from '../layouts/Layout.astro';
       border-collapse: collapse;
     }
     .list-table th {
-      font-size: 10px;
+      font-size: 12px;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.8px;
@@ -478,7 +478,7 @@ import Layout from '../layouts/Layout.astro';
     }
     .list-table td {
       padding: 10px 12px;
-      font-size: 13px;
+      font-size: 14px;
       color: var(--text);
       border-bottom: 1px solid var(--border);
       vertical-align: middle;
@@ -702,8 +702,8 @@ import Layout from '../layouts/Layout.astro';
     .agent-panel-header { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
     .pixel-canvas { image-rendering: pixelated; flex-shrink: 0; }
     .agent-panel-info { flex: 1; min-width: 0; }
-    .agent-panel-name { font-size: 15px; font-weight: 700; color: var(--text); }
-    .agent-panel-role { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+    .agent-panel-name { font-size: 17px; font-weight: 700; color: var(--text); }
+    .agent-panel-role { font-size: 13px; color: var(--text-dim); margin-top: 2px; }
     .agent-task-list { display: flex; flex-direction: column; gap: 8px; }
     .agent-task-item {
       display: flex; align-items: flex-start; gap: 10px;
@@ -715,9 +715,9 @@ import Layout from '../layouts/Layout.astro';
     .agent-task-dot.todo  { background: var(--text-faint); }
     .agent-task-dot.doing { background: #fbbf24; animation: pulse-active 2s ease-in-out infinite; }
     .agent-task-dot.done  { background: #4ade80; }
-    .agent-task-title { font-size: 12px; color: var(--text-sub); line-height: 1.5; }
-    .agent-task-meta  { font-size: 10px; color: var(--text-dim); margin-top: 2px; }
-    .agent-no-tasks   { font-size: 12px; color: var(--text-faint); padding: 4px 0; }
+    .agent-task-title { font-size: 14px; color: var(--text-sub); line-height: 1.5; }
+    .agent-task-meta  { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+    .agent-no-tasks   { font-size: 14px; color: var(--text-faint); padding: 4px 0; }
 
     /* ── Skeleton ── */
     .skeleton {
@@ -757,6 +757,7 @@ import Layout from '../layouts/Layout.astro';
       <a class="nav-logo" href="/">
         <span class="logo-emoji tossface">🐾</span>
         <span>ZPD</span>
+        <span class="status-dot active" style="flex-shrink:0"></span>
       </a>
       <div class="nav-tabs">
         <button class="nav-tab active" data-tab="overview">홈</button>
@@ -790,6 +791,18 @@ import Layout from '../layouts/Layout.astro';
           <div class="stat-item">
             <p class="stat-label">Output</p>
             <p class="stat-value" id="total-output">—</p>
+          </div>
+          <div class="stat-item">
+            <p class="stat-label">활성시간</p>
+            <p class="stat-value" id="total-active-time">—</p>
+          </div>
+          <div class="stat-item">
+            <p class="stat-label">총 작업</p>
+            <p class="stat-value" id="total-tasks">—</p>
+          </div>
+          <div class="stat-item">
+            <p class="stat-label">세션</p>
+            <p class="stat-value" id="total-sessions">—</p>
           </div>
         </div>
       </div>
@@ -1058,10 +1071,16 @@ import Layout from '../layouts/Layout.astro';
       const totalOutput = agents.reduce((s, a) => s + (a.outputTokens || 0), 0);
       const totalUsed = totalInput + totalOutput;
 
+      const totalActiveMs = agents.reduce((s, a) => s + (a.activeMs || 0), 0);
+      const totalSessions = agents.reduce((s, a) => s + (a.sessionCount || 0), 0);
+
       document.getElementById('total-used').textContent = fmt(totalUsed);
       document.getElementById('total-input').textContent = fmt(totalInput);
       document.getElementById('total-output').textContent = fmt(totalOutput);
+      document.getElementById('total-active-time').textContent = activeDuration(totalActiveMs) || '—';
+      document.getElementById('total-sessions').textContent = totalSessions ? totalSessions + '회' : '—';
       document.getElementById('agent-count-label').textContent = `에이전트 ${agents.length}명 합산`;
+      updateSummaryTaskCount();
       const updatedText = data.updatedAt
         ? new Date(data.updatedAt).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })
         : '알 수 없음';
@@ -1158,8 +1177,15 @@ import Layout from '../layouts/Layout.astro';
       renderArchive();
     }
 
+    function updateSummaryTaskCount() {
+      const total = COLS.reduce((s, col) => s + (kanbanData[col] || []).length, 0);
+      const el = document.getElementById('total-tasks');
+      if (el) el.textContent = total + '개';
+    }
+
     function renderKanban() {
       const data = kanbanData;
+      updateSummaryTaskCount();
       COLS.forEach((col, colIdx) => {
         const tasks = data[col] || [];
         document.getElementById(`count-${col}`).textContent = tasks.length;
