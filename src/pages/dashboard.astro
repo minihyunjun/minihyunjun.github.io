@@ -327,18 +327,13 @@ import Layout from '../layouts/Layout.astro';
     }
     .kanban-add-btn:hover { color: var(--text); border-color: var(--border-hover); }
 
-    .kanban-board {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      align-items: start;
-    }
+    .kanban-board { display: none; /* replaced by .board-view */ }
 
     .kanban-col {
       background: var(--kanban-col-bg);
       border-radius: 14px;
       padding: 16px;
-      min-height: 200px;
+      min-height: 500px;
     }
     .kanban-col-header {
       display: flex;
@@ -438,6 +433,138 @@ import Layout from '../layouts/Layout.astro';
       font-size: 13px;
       padding: 24px 0;
     }
+
+    /* ── View toggle ── */
+    .view-toggle {
+      display: flex;
+      background: var(--kanban-col-bg);
+      border-radius: 8px;
+      padding: 3px;
+      gap: 2px;
+    }
+    .view-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 4px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      font-family: inherit;
+    }
+    .view-btn.active { background: var(--surface); color: var(--text); }
+    .view-btn:hover:not(.active) { color: var(--text); }
+
+    /* ── List view ── */
+    .list-view { display: none; }
+    .list-view.active { display: block; }
+    .board-view { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; align-items: start; }
+    .board-view.hidden { display: none; }
+    .list-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .list-table th {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-dim);
+      padding: 6px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    .list-table td {
+      padding: 10px 12px;
+      font-size: 13px;
+      color: var(--text);
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .list-table tr:last-child td { border-bottom: none; }
+    .list-table tr:hover td { background: var(--kanban-col-bg); }
+    .list-status-badge {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 99px;
+      white-space: nowrap;
+    }
+    .list-status-todo   { background: var(--badge-bg); color: var(--text-muted); }
+    .list-status-doing  { background: #2d2210; color: #fbbf24; }
+    .list-status-done   { background: #0f2d1a; color: #4ade80; }
+    [data-theme="light"] .list-status-doing { background: #fffbeb; color: #b45309; }
+    [data-theme="light"] .list-status-done  { background: #f0fdf4; color: #15803d; }
+    .list-table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    /* ── Archive section ── */
+    .archive-section {
+      margin-top: 40px;
+    }
+    .archive-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .archive-toggle-icon {
+      font-size: 12px;
+      color: var(--text-dim);
+      transition: transform 0.2s;
+    }
+    .archive-toggle-icon.open { transform: rotate(180deg); }
+    .archive-body { display: none; }
+    .archive-body.open { display: block; }
+    .archive-list {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .archive-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .archive-item:last-child { border-bottom: none; }
+    .archive-item-title { font-size: 13px; color: var(--text-sub); flex: 1; min-width: 0; }
+    .archive-item-meta  { font-size: 11px; color: var(--text-dim); white-space: nowrap; }
+    .archive-restore-btn {
+      background: none;
+      border: 1px solid var(--btn-border);
+      color: var(--text-dim);
+      font-size: 11px;
+      padding: 3px 9px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+      white-space: nowrap;
+      font-family: inherit;
+    }
+    .archive-restore-btn:hover { color: var(--text); border-color: var(--border-hover); }
+    .archive-delete-btn {
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-size: 12px;
+      cursor: pointer;
+      padding: 3px 6px;
+      border-radius: 5px;
+      transition: color 0.15s;
+    }
+    .archive-delete-btn:hover { color: #f87171; }
+    .archive-empty { padding: 24px; text-align: center; font-size: 13px; color: var(--text-faint); }
 
     /* ── Modal ── */
     .modal-overlay {
@@ -620,7 +747,7 @@ import Layout from '../layouts/Layout.astro';
       .summary-value { font-size: 28px; }
       .bar-row { grid-template-columns: 70px 1fr 80px; gap: 10px; }
       .cards { grid-template-columns: 1fr; }
-      .kanban-board { grid-template-columns: 1fr; }
+      .board-view { grid-template-columns: 1fr; }
     }
   </style>
 
@@ -688,11 +815,19 @@ import Layout from '../layouts/Layout.astro';
     <section id="tab-kanban" class="tab-content">
       <div class="kanban-toolbar">
         <p class="section-title" style="margin:0">작업 보드</p>
-        <button class="kanban-add-btn" id="kanban-add-btn">
-          <span>+</span> 태스크 추가
-        </button>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="view-toggle">
+            <button class="view-btn active" data-view="board">보드</button>
+            <button class="view-btn" data-view="list">리스트</button>
+          </div>
+          <button class="kanban-add-btn" id="kanban-add-btn">
+            <span>+</span> 태스크 추가
+          </button>
+        </div>
       </div>
-      <div class="kanban-board">
+
+      <!-- 보드 뷰 -->
+      <div class="board-view" id="board-view">
         <div class="kanban-col">
           <div class="kanban-col-header">
             <span class="kanban-col-title">대기</span>
@@ -713,6 +848,35 @@ import Layout from '../layouts/Layout.astro';
             <span class="kanban-col-count" id="count-done">0</span>
           </div>
           <div id="col-done"></div>
+        </div>
+      </div>
+
+      <!-- 리스트 뷰 -->
+      <div class="list-view" id="list-view">
+        <div class="list-table-wrap">
+          <table class="list-table" id="list-table">
+            <thead>
+              <tr>
+                <th>상태</th>
+                <th>제목</th>
+                <th>우선순위</th>
+                <th>에이전트</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="list-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 아카이브 섹션 -->
+      <div class="archive-section">
+        <div class="archive-header" id="archive-header">
+          <p class="section-title" style="margin:0">아카이브</p>
+          <span class="archive-toggle-icon" id="archive-toggle-icon">▼</span>
+        </div>
+        <div class="archive-body" id="archive-body">
+          <div class="archive-list" id="archive-list"></div>
         </div>
       </div>
     </section>
@@ -978,17 +1142,20 @@ import Layout from '../layouts/Layout.astro';
     const AGENT_NAMES  = { gary: '개리', judy: '주디', nick: '닉' };
     const PRIORITY_LABELS = { high: '높음', medium: '보통', low: '낮음' };
 
-    let kanbanData = { todo: [], doing: [], done: [] };
+    let kanbanData = { todo: [], doing: [], done: [], archive: [] };
 
     async function loadKanban() {
       try {
         const res = await fetch('/data/kanban.json?t=' + Date.now());
         if (!res.ok) throw new Error(res.status);
         kanbanData = await res.json();
+        if (!kanbanData.archive) kanbanData.archive = [];
       } catch (e) {
         console.error('Failed to load kanban:', e);
       }
       renderKanban();
+      renderListView();
+      renderArchive();
     }
 
     function renderKanban() {
@@ -999,8 +1166,8 @@ import Layout from '../layouts/Layout.astro';
         document.getElementById(`col-${col}`).innerHTML = tasks.length === 0
           ? `<p class="kanban-empty">태스크 없음</p>`
           : tasks.map((task, i) => {
-              const canLeft  = colIdx > 0;
-              const canRight = colIdx < 2;
+              const canLeft = colIdx > 0;
+              const isDone  = col === 'done';
               const agentTag = task.agent
                 ? `<span class="agent-tag tossface">${AGENT_EMOJIS[task.agent]} ${AGENT_NAMES[task.agent]}</span>`
                 : '';
@@ -1012,8 +1179,8 @@ import Layout from '../layouts/Layout.astro';
                   ${agentTag}
                 </div>
                 <div class="kanban-card-actions" onclick="event.stopPropagation()">
-                  ${canLeft  ? `<button class="card-action-btn" onclick="moveTask('${col}',${i},'${COLS[colIdx-1]}')">←</button>` : ''}
-                  ${canRight ? `<button class="card-action-btn" onclick="moveTask('${col}',${i},'${COLS[colIdx+1]}')">→</button>` : ''}
+                  ${canLeft ? `<button class="card-action-btn" onclick="moveTask('${col}',${i},'${COLS[colIdx-1]}')">←</button>` : ''}
+                  ${isDone  ? `<button class="card-action-btn" title="아카이브" onclick="archiveTask('${col}',${i})">🗂</button>` : ''}
                   <button class="card-action-btn delete" onclick="deleteTask('${col}',${i})">✕</button>
                 </div>
               </div>`;
@@ -1029,12 +1196,113 @@ import Layout from '../layouts/Layout.astro';
       const [task] = kanbanData[fromCol].splice(idx, 1);
       kanbanData[toCol].push(task);
       renderKanban();
+      renderListView();
     };
 
     window.deleteTask = function(col, idx) {
       kanbanData[col].splice(idx, 1);
       renderKanban();
+      renderListView();
     };
+
+    window.archiveTask = function(col, idx) {
+      const [task] = kanbanData[col].splice(idx, 1);
+      task.archivedAt = Date.now();
+      kanbanData.archive.push(task);
+      renderKanban();
+      renderListView();
+      renderArchive();
+    };
+
+    window.unarchiveTask = function(idx) {
+      const [task] = kanbanData.archive.splice(idx, 1);
+      delete task.archivedAt;
+      kanbanData.todo.push(task);
+      renderKanban();
+      renderListView();
+      renderArchive();
+    };
+
+    window.deleteArchiveTask = function(idx) {
+      kanbanData.archive.splice(idx, 1);
+      renderArchive();
+    };
+
+    // ── List view render ──
+    const STATUS_LABELS = { todo: '대기', doing: '진행 중', done: '완료' };
+    function renderListView() {
+      const allTasks = COLS.flatMap(col => (kanbanData[col] || []).map(t => ({ ...t, col })));
+      const tbody = document.getElementById('list-tbody');
+      if (!tbody) return;
+      if (allTasks.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--text-faint)">태스크 없음</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = allTasks.map((task, i) => {
+        const agentStr = task.agent
+          ? `<span class="agent-tag tossface" style="display:inline-flex">${AGENT_EMOJIS[task.agent]} ${AGENT_NAMES[task.agent]}</span>`
+          : '<span style="color:var(--text-faint)">—</span>';
+        return `<tr>
+          <td><span class="list-status-badge list-status-${task.col}">${STATUS_LABELS[task.col]}</span></td>
+          <td>${escHtml(task.title)}</td>
+          <td><span class="priority-badge priority-${task.priority}">${PRIORITY_LABELS[task.priority]}</span></td>
+          <td>${agentStr}</td>
+          <td style="text-align:right">
+            ${task.col === 'done' ? `<button class="card-action-btn" title="아카이브" onclick="archiveListTask('${task.col}',${kanbanData[task.col].indexOf(task)})">🗂</button>` : ''}
+            <button class="card-action-btn delete" onclick="deleteListTask('${task.col}',${kanbanData[task.col].indexOf(task)})">✕</button>
+          </td>
+        </tr>`;
+      }).join('');
+    }
+
+    window.archiveListTask = function(col, idx) { window.archiveTask(col, idx); };
+    window.deleteListTask  = function(col, idx) { window.deleteTask(col, idx); };
+
+    // ── Archive render ──
+    function renderArchive() {
+      const items = kanbanData.archive || [];
+      const el = document.getElementById('archive-list');
+      if (!el) return;
+      if (items.length === 0) {
+        el.innerHTML = `<p class="archive-empty">아카이브된 태스크 없음</p>`;
+        return;
+      }
+      el.innerHTML = items.map((task, i) => {
+        const agentStr = task.agent
+          ? `<span class="tossface">${AGENT_EMOJIS[task.agent]}</span> ${AGENT_NAMES[task.agent]}`
+          : '';
+        const archivedDate = task.archivedAt
+          ? new Date(task.archivedAt).toLocaleDateString('ko-KR')
+          : '';
+        return `<div class="archive-item">
+          <span class="priority-badge priority-${task.priority}">${PRIORITY_LABELS[task.priority]}</span>
+          <span class="archive-item-title">${escHtml(task.title)}</span>
+          <span class="archive-item-meta">${agentStr ? agentStr + ' · ' : ''}${archivedDate}</span>
+          <button class="archive-restore-btn" onclick="unarchiveTask(${i})">복원</button>
+          <button class="archive-delete-btn" onclick="deleteArchiveTask(${i})">✕</button>
+        </div>`;
+      }).join('');
+    }
+
+    // ── Archive toggle ──
+    document.getElementById('archive-header').addEventListener('click', () => {
+      const body = document.getElementById('archive-body');
+      const icon = document.getElementById('archive-toggle-icon');
+      body.classList.toggle('open');
+      icon.classList.toggle('open');
+    });
+
+    // ── View toggle ──
+    document.querySelectorAll('.view-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const view = btn.dataset.view;
+        document.getElementById('board-view').classList.toggle('hidden', view !== 'board');
+        document.getElementById('list-view').classList.toggle('active', view === 'list');
+        if (view === 'list') renderListView();
+      });
+    });
 
     // ── Detail modal ──
     const detailModal = document.getElementById('detail-modal');
@@ -1161,7 +1429,7 @@ import Layout from '../layouts/Layout.astro';
           <div class="agent-panel-header">
             <canvas class="pixel-canvas" id="px-${a.id}" width="54" height="48"></canvas>
             <div class="agent-panel-info">
-              <p class="agent-panel-name"><span class="tossface">${a.emoji}</span> ${a.name}</p>
+              <p class="agent-panel-name"><span class="tossface">${a.emoji}</span> ${a.name} <span class="status-dot ${isActive(a.updatedAt) ? 'active' : 'idle'}" style="display:inline-block;vertical-align:middle;margin-left:5px"></span></p>
               <p class="agent-panel-role">${a.role} · ${modelShort}</p>
             </div>
           </div>

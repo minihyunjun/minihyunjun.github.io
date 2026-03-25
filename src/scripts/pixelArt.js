@@ -152,15 +152,15 @@ export function startAnim(id) {
       if (phase === 'idle') {
         idleTicks++;
 
-        // 숨쉬기: breathing 중이면 down/normal 반복 (yOff로 전체 캐릭터를 1px 아래로)
+        // 숨쉬기: breathing 중이면 down/normal 반복
         if (breathing) {
           breathTick++;
-          // 3틱마다 down↔normal 전환 (3 × 120ms = 360ms)
-          const downPhase = Math.floor(breathTick / 3) % 2 === 0;
-          _draw(el, sp, 'idle', 0, downPhase ? 1 : 0);
-          if (breathTick >= breathCycles * 6) {
+          // 2틱마다 down↔normal 전환 (2 × 120ms = 240ms)
+          const downPhase = Math.floor(breathTick / 2) % 2 === 0;
+          _draw(el, sp, downPhase ? 'breathe' : 'idle', 0);
+          if (breathTick >= breathCycles * 4) {
             breathing = false;
-            _draw(el, sp, 'idle', 0, 0);
+            _draw(el, sp, 'idle', 0);
           }
           return;
         }
@@ -172,11 +172,11 @@ export function startAnim(id) {
           return;
         }
 
-        // 숨쉬기 시작 (약 8~12초에 한 번)
-        if (Math.random() < 0.012) {
+        // 숨쉬기 시작 (약 3~5초에 한 번)
+        if (Math.random() < 0.025) {
           breathing = true;
           breathTick = 0;
-          breathCycles = 2 + Math.floor(Math.random() * 2); // 2~3 사이클
+          breathCycles = 1 + Math.floor(Math.random() * 2); // 1~2 사이클
           return;
         }
 
