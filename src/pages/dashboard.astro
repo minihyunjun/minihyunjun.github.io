@@ -191,12 +191,12 @@ import Layout from '../layouts/Layout.astro';
     }
     .summary-main { flex: 1; min-width: 160px; }
     .summary-label { font-size: 15px; color: var(--text-muted); margin-bottom: 6px; }
-    .summary-value { font-size: 40px; font-weight: 700; color: var(--text); letter-spacing: -1px; }
+    .summary-value { font-size: 40px; font-weight: 700; color: var(--text); letter-spacing: -1px; font-family: 'JetBrains Mono', monospace; }
     .summary-sub { font-size: 14px; color: var(--text-dim); margin-top: 4px; }
     .summary-stats { display: flex; gap: 28px; flex-wrap: wrap; }
     .stat-item { text-align: right; }
     .stat-label { font-size: 12px; color: var(--text-dim); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
-    .stat-value { font-size: 22px; font-weight: 600; color: var(--text-sub); }
+    .stat-value { font-size: 22px; font-weight: 600; color: var(--text-sub); font-family: 'JetBrains Mono', monospace; }
 
     /* ── Overview: Bar chart ── */
     .bar-section {
@@ -217,7 +217,7 @@ import Layout from '../layouts/Layout.astro';
     .bar-label { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 500; color: var(--text-sub); }
     .bar-track { height: 10px; background: var(--bar-track); border-radius: 99px; overflow: hidden; }
     .bar-fill { height: 100%; border-radius: 99px; transition: width 0.8s cubic-bezier(0.4,0,0.2,1); }
-    .bar-count { font-size: 14px; color: var(--text-muted); text-align: right; font-variant-numeric: tabular-nums; }
+    .bar-count { font-size: 14px; color: var(--text-muted); text-align: right; font-family: 'JetBrains Mono', monospace; }
 
     /* ── Overview: Agent cards ── */
     .cards {
@@ -259,7 +259,7 @@ import Layout from '../layouts/Layout.astro';
     }
     .token-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
     .token-block-label { font-size: 12px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
-    .token-block-value { font-size: 23px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
+    .token-block-value { font-size: 23px; font-weight: 700; color: var(--text); font-family: 'JetBrains Mono', monospace; }
     .ctx-label {
       display: flex;
       justify-content: space-between;
@@ -270,7 +270,7 @@ import Layout from '../layouts/Layout.astro';
       gap: 6px;
     }
     .ctx-label-left { flex-shrink: 0; }
-    .ctx-tokens { font-size: 12px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
+    .ctx-tokens { font-size: 12px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; }
     .ctx-pct { font-weight: 700; flex-shrink: 0; }
     .ctx-pct.over { color: #f87171; }
     .ctx-track { height: 4px; background: var(--bar-track); border-radius: 99px; overflow: hidden; margin-bottom: 14px; }
@@ -511,19 +511,9 @@ import Layout from '../layouts/Layout.astro';
     .archive-header {
       display: flex;
       align-items: center;
-      justify-content: space-between;
       margin-bottom: 16px;
-      cursor: pointer;
-      user-select: none;
     }
-    .archive-toggle-icon {
-      font-size: 12px;
-      color: var(--text-dim);
-      transition: transform 0.2s;
-    }
-    .archive-toggle-icon.open { transform: rotate(180deg); }
-    .archive-body { display: none; }
-    .archive-body.open { display: block; }
+    .archive-body { display: block; }
     .archive-list {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -697,27 +687,41 @@ import Layout from '../layouts/Layout.astro';
     .btn-primary:hover { opacity: 0.85; }
 
     /* ── Agents tab ── */
-    .agent-panels { display: flex; flex-direction: column; gap: 20px; }
-    .agent-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 22px; }
-    .agent-panel-header { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+    .agent-panels { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; align-items: start; }
+    .agent-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+    .agent-panel-header { display: flex; align-items: center; gap: 14px; padding: 20px 20px 16px; border-bottom: 1px solid var(--border); }
     .pixel-canvas { image-rendering: pixelated; flex-shrink: 0; }
     .agent-panel-info { flex: 1; min-width: 0; }
-    .agent-panel-name { font-size: 17px; font-weight: 700; color: var(--text); }
-    .agent-panel-role { font-size: 13px; color: var(--text-dim); margin-top: 2px; }
-    .agent-task-list { display: flex; flex-direction: column; gap: 8px; }
+    .agent-panel-name { font-size: 17px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 7px; }
+    .agent-panel-role { font-size: 13px; color: var(--text-dim); margin-top: 3px; }
+    .agent-panel-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-bottom: 1px solid var(--border);
+    }
+    .agent-stat-cell {
+      padding: 12px 14px;
+      border-right: 1px solid var(--border);
+    }
+    .agent-stat-cell:last-child { border-right: none; }
+    .agent-stat-label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 4px; }
+    .agent-stat-value { font-size: 15px; font-weight: 600; color: var(--text); font-family: 'JetBrains Mono', monospace; }
+    .agent-panel-tasks { padding: 14px 20px 20px; }
+    .agent-panel-tasks-label { font-size: 11px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 10px; }
+    .agent-task-list { display: flex; flex-direction: column; gap: 6px; }
     .agent-task-item {
       display: flex; align-items: flex-start; gap: 10px;
-      padding: 10px 12px;
+      padding: 9px 12px;
       background: var(--kanban-col-bg);
-      border: 1px solid var(--border); border-radius: 8px;
+      border-radius: 8px;
     }
-    .agent-task-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 3px; }
+    .agent-task-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
     .agent-task-dot.todo  { background: var(--text-faint); }
     .agent-task-dot.doing { background: #fbbf24; animation: pulse-active 2s ease-in-out infinite; }
     .agent-task-dot.done  { background: #4ade80; }
-    .agent-task-title { font-size: 14px; color: var(--text-sub); line-height: 1.5; }
-    .agent-task-meta  { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
-    .agent-no-tasks   { font-size: 14px; color: var(--text-faint); padding: 4px 0; }
+    .agent-task-title { font-size: 13px; color: var(--text-sub); line-height: 1.5; }
+    .agent-task-meta  { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+    .agent-no-tasks   { font-size: 13px; color: var(--text-faint); padding: 4px 0; }
 
     /* ── Skeleton ── */
     .skeleton {
@@ -748,6 +752,7 @@ import Layout from '../layouts/Layout.astro';
       .bar-row { grid-template-columns: 70px 1fr 80px; gap: 10px; }
       .cards { grid-template-columns: 1fr; }
       .board-view { grid-template-columns: 1fr; }
+      .agent-panels { grid-template-columns: 1fr; }
     }
   </style>
 
@@ -755,9 +760,8 @@ import Layout from '../layouts/Layout.astro';
   <nav class="navbar">
     <div class="nav-inner">
       <a class="nav-logo" href="/">
-        <span class="logo-emoji tossface">🐾</span>
-        <span>ZPD</span>
         <span class="status-dot active" style="flex-shrink:0"></span>
+        <span>ZPD</span>
       </a>
       <div class="nav-tabs">
         <button class="nav-tab active" data-tab="overview">홈</button>
@@ -884,11 +888,10 @@ import Layout from '../layouts/Layout.astro';
 
       <!-- 아카이브 섹션 -->
       <div class="archive-section">
-        <div class="archive-header" id="archive-header">
+        <div class="archive-header">
           <p class="section-title" style="margin:0">아카이브</p>
-          <span class="archive-toggle-icon" id="archive-toggle-icon">▼</span>
         </div>
-        <div class="archive-body" id="archive-body">
+        <div class="archive-body">
           <div class="archive-list" id="archive-list"></div>
         </div>
       </div>
@@ -1310,14 +1313,6 @@ import Layout from '../layouts/Layout.astro';
       }).join('');
     }
 
-    // ── Archive toggle ──
-    document.getElementById('archive-header').addEventListener('click', () => {
-      const body = document.getElementById('archive-body');
-      const icon = document.getElementById('archive-toggle-icon');
-      body.classList.toggle('open');
-      icon.classList.toggle('open');
-    });
-
     // ── View toggle ──
     document.querySelectorAll('.view-btn').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -1439,6 +1434,7 @@ import Layout from '../layouts/Layout.astro';
       const kd = kanbanData;
       document.getElementById('agent-panels').innerHTML = _cachedTokens.agents.map(a => {
         const modelShort = (a.model || '').split('/').pop();
+        const totalTokens = (a.inputTokens || 0) + (a.outputTokens || 0);
         const tasks = ['todo','doing','done'].flatMap(col =>
           (kd[col] || []).map(t => ({ ...t, col }))
         ).filter(t => t.agent === a.id);
@@ -1455,11 +1451,33 @@ import Layout from '../layouts/Layout.astro';
           <div class="agent-panel-header">
             <canvas class="pixel-canvas" id="px-${a.id}" width="54" height="48"></canvas>
             <div class="agent-panel-info">
-              <p class="agent-panel-name"><span class="tossface">${a.emoji}</span> ${a.name} <span class="status-dot ${isActive(a.updatedAt) ? 'active' : 'idle'}" style="display:inline-block;vertical-align:middle;margin-left:5px"></span></p>
-              <p class="agent-panel-role">${a.role} · ${modelShort}</p>
+              <p class="agent-panel-name">
+                <span class="tossface">${a.emoji}</span>
+                <span>${a.name}</span>
+                <span class="status-dot ${isActive(a.updatedAt) ? 'active' : 'idle'}"></span>
+              </p>
+              <p class="agent-panel-role">${a.role}</p>
+              <p class="agent-panel-role" style="margin-top:2px;font-size:11px;opacity:0.7">${modelShort}</p>
             </div>
           </div>
-          <div class="agent-task-list">${tasksHtml}</div>
+          <div class="agent-panel-stats">
+            <div class="agent-stat-cell">
+              <p class="agent-stat-label">토큰</p>
+              <p class="agent-stat-value">${fmt(totalTokens)}</p>
+            </div>
+            <div class="agent-stat-cell">
+              <p class="agent-stat-label">활성시간</p>
+              <p class="agent-stat-value">${activeDuration(a.activeMs) || '—'}</p>
+            </div>
+            <div class="agent-stat-cell">
+              <p class="agent-stat-label">마지막 활동</p>
+              <p class="agent-stat-value" style="font-size:12px">${relTime(a.updatedAt)}</p>
+            </div>
+          </div>
+          <div class="agent-panel-tasks">
+            <p class="agent-panel-tasks-label">작업 ${tasks.length > 0 ? `(${tasks.length})` : ''}</p>
+            <div class="agent-task-list">${tasksHtml}</div>
+          </div>
         </div>`;
       }).join('');
       _cachedTokens.agents.forEach(a => startAnim(a.id));
