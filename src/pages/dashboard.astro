@@ -705,7 +705,19 @@ import Layout from '../layouts/Layout.astro';
     }
     .agent-stat-cell:last-child { border-right: none; }
     .agent-stat-label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 4px; }
-    .agent-stat-value { font-size: 15px; font-weight: 600; color: var(--text); font-family: 'JetBrains Mono', monospace; }
+    .agent-stat-value { font-size: 14px; font-weight: 600; color: var(--text); font-family: 'JetBrains Mono', monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .model-pill {
+      display: inline-block;
+      margin-top: 6px;
+      padding: 2px 9px;
+      border-radius: 99px;
+      border: 1px solid var(--border);
+      font-size: 11px;
+      color: var(--text-dim);
+      background: var(--badge-bg);
+      font-family: 'JetBrains Mono', monospace;
+      white-space: nowrap;
+    }
     .agent-panel-tasks { padding: 14px 20px 20px; }
     .agent-panel-tasks-label { font-size: 11px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 10px; }
     .agent-task-list { display: flex; flex-direction: column; gap: 6px; }
@@ -766,7 +778,6 @@ import Layout from '../layouts/Layout.astro';
       <div class="nav-tabs">
         <button class="nav-tab active" data-tab="overview">홈</button>
         <button class="nav-tab" data-tab="kanban">칸반</button>
-        <button class="nav-tab" data-tab="agents">에이전트</button>
       </div>
       <div class="nav-actions">
         <button id="theme-toggle" title="테마 전환">🌙</button>
@@ -780,6 +791,13 @@ import Layout from '../layouts/Layout.astro';
 
     <!-- 개요 탭 -->
     <section id="tab-overview" class="tab-content active">
+      <p class="section-title">에이전트</p>
+      <div class="agent-panels" id="agent-panels" style="margin-bottom:32px">
+        {[1,2,3].map(() => (
+          <div class="agent-panel"><div style="height:220px" class="skeleton"></div></div>
+        ))}
+      </div>
+
       <p class="section-title">전체 요약</p>
       <div class="summary" id="summary">
         <div class="summary-main">
@@ -811,18 +829,9 @@ import Layout from '../layouts/Layout.astro';
         </div>
       </div>
 
-      <p class="section-title">에이전트별 비교</p>
+      <p class="section-title">에이전트별 토큰</p>
       <div class="bar-section" id="bar-section">
         <div style="height:100px" class="skeleton"></div>
-      </div>
-
-      <p class="section-title">에이전트 상세</p>
-      <div class="cards" id="cards">
-        {[1,2,3].map(() => (
-          <div class="agent-card">
-            <div style="height:160px" class="skeleton"></div>
-          </div>
-        ))}
       </div>
 
       <footer>ZPD · 최근 갱신: <span id="data-updated">로딩 중...</span></footer>
@@ -894,13 +903,6 @@ import Layout from '../layouts/Layout.astro';
         <div class="archive-body">
           <div class="archive-list" id="archive-list"></div>
         </div>
-      </div>
-    </section>
-
-    <!-- 에이전트 탭 -->
-    <section id="tab-agents" class="tab-content">
-      <div class="agent-panels" id="agent-panels">
-        <div style="height:180px" class="skeleton"></div>
       </div>
     </section>
 
