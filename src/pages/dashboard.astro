@@ -688,7 +688,8 @@ import Layout from '../layouts/Layout.astro';
 
     /* ── Agents tab ── */
     .agent-panels { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; align-items: start; }
-    .agent-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+    .agent-panel { position: relative; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+    .working-badge { position: absolute; top: 12px; right: 14px; font-size: 18px; line-height: 1; font-family: Tossface; }
     .agent-panel-header { display: flex; align-items: center; gap: 14px; padding: 20px 20px 16px; border-bottom: 1px solid var(--border); }
     .pixel-canvas { image-rendering: pixelated; flex-shrink: 0; }
     .agent-panel-info { flex: 1; min-width: 0; }
@@ -1408,7 +1409,9 @@ import Layout from '../layouts/Layout.astro';
                 <p class="agent-task-meta">${_SL[t.col]}${t.priority ? ' · ' + _PL[t.priority] : ''}</p>
               </div>
             </div>`).join('');
+        const isWorking = a.id === 'gary'; // TODO: replace with real working state
         return `<div class="agent-panel">
+          ${isWorking ? '<span class="working-badge tossface">🚧</span>' : ''}
           <div class="agent-panel-header">
             <canvas class="pixel-canvas" id="px-${a.id}" width="54" height="48"></canvas>
             <div class="agent-panel-info">
@@ -1418,7 +1421,7 @@ import Layout from '../layouts/Layout.astro';
                 <span class="status-dot ${isActive(a.updatedAt) ? 'active' : 'idle'}"></span>
               </p>
               <p class="agent-panel-role">${a.role}</p>
-              <p class="agent-panel-role" style="margin-top:2px;font-size:11px;opacity:0.7">${modelShort}</p>
+              <span class="model-pill">${modelShort}</span>
             </div>
           </div>
           <div class="agent-panel-stats">
